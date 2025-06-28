@@ -4,7 +4,9 @@ import org.sa.service.CoordinateService;
 import org.sa.service.ScoringService;
 import org.sa.service.StravaService;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -16,6 +18,7 @@ public class AppSegmentsComparator {
 
   public static void main(String[] args) throws IOException {
     List<List<Double>> neverTriedPoints = new ArrayList<>();
+    List<String> neverTriedLabels = new ArrayList<>();
 
     new StravaService()
       .getStarredSegments()
@@ -30,6 +33,7 @@ public class AppSegmentsComparator {
         String myBestTimeSeconds = "-";
         if (s.athletePrEffort == null) {
           neverTriedPoints.add(s.startLatLng);
+          neverTriedLabels.add(s.name);
         }
         else myBestTimeSeconds = "" + s.athletePrEffort.elapsedTime;
 
@@ -45,6 +49,7 @@ public class AppSegmentsComparator {
       });
 
     printLinkOfMapOfPoints(neverTriedPoints);
+    generateCSVForMyMaps(neverTriedPoints, neverTriedLabels);
   }
 
   private static void printLinkOfMapOfPoints(List<List<Double>> neverTriedPoints) {
@@ -70,5 +75,19 @@ public class AppSegmentsComparator {
 
   private static String getGoogleMapsPoint(List<Double> latLng) {
     return latLng.get(0) + "," + latLng.get(1);
+  }
+
+  private static void generateCSVForMyMaps(List<List<Double>> points, List<String> labels) {
+    try (PrintWriter writer = new PrintWriter(new File("points.csv"))) {
+      writer.println("Name,Latitude,Longitude");
+      for (int i = 0; i < points.size(); i++) {
+        List<Double> latLng = points.get(i);
+        String label = labels.get(i);
+        writer.println(label + "," + latLng.get(0) + "," + latLng.get(1));
+      }
+      System.out.println("\nCSV generated: points.csv. Import this into Google My Maps.");
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }

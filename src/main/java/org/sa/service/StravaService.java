@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import org.sa.config.Props;
 import org.sa.dto.Segment;
 
@@ -15,6 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class StravaService {
 
@@ -68,5 +70,44 @@ public class StravaService {
 
   public List<Segment> getStarredSegments() throws IOException {
     return parseSegments(getStarredSegmentsJson());
+  }
+
+  public List<List<Double>> getSegmentPoints(long segmentId) {
+    try {
+      URL url = new URL("https://www.strava.com/api/v3/segments/" + segmentId);
+      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+      conn.setRequestMethod("GET");
+      conn.setRequestProperty("Authorization", "Bearer " + getAccessToken());
+
+      try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+        String response = reader.lines().collect(Collectors.joining());
+        String googlePolylineFormat = extractPolyline(response); // compressed segment track
+        return PolylineUtil.decodePolyline(googlePolylineFormat);
+      }
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to fetch segment: " + e.getMessage(), e);
+    }
+  }
+
+  public String getSegmentPolyline(long segmentId) {
+    try {
+      URL url = new URL("https://www.strava.com/api/v3/segments/" + segmentId);
+      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+      conn.setRequestMethod("GET");
+      conn.setRequestProperty("Authorization", "Bearer " + getAccessToken());
+
+      try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+        String response = reader.lines().collect(Collectors.joining());
+        String googlePolylineFormat = extractPolyline(response); // compressed segment track
+        return googlePolylineFormat;
+      }
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to fetch segment: " + e.getMessage(), e);
+    }
+  }
+
+  private static String extractPolyline(String json) {
+    JSONObject obj = new JSONObject(json);
+    return obj.getJSONObject("map").getString("polyline");
   }
 }

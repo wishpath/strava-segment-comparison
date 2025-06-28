@@ -1,5 +1,6 @@
 package org.sa.app;
 
+import org.sa.dto.Segment;
 import org.sa.service.CoordinateService;
 import org.sa.service.ScoringService;
 import org.sa.service.StravaService;
@@ -15,12 +16,14 @@ public class AppSegmentsComparator {
 
   public static final String RESET = "\u001B[0m";
   public static final String RED = "\u001B[31m";
+  private static final StravaService stravaService = new StravaService();
 
   public static void main(String[] args) throws IOException {
     List<List<Double>> neverTriedPoints = new ArrayList<>();
     List<String> neverTriedLabels = new ArrayList<>();
+    List<Segment> neverTriedSegments = new ArrayList<>();
 
-    new StravaService()
+    stravaService
       .getStarredSegments()
       .stream()
       .filter(s -> CoordinateService.isCloseToHome(s))
@@ -34,6 +37,7 @@ public class AppSegmentsComparator {
         if (s.athletePrEffort == null) {
           neverTriedPoints.add(s.startLatLng);
           neverTriedLabels.add(s.name);
+          neverTriedSegments.add(s);
         }
         else myBestTimeSeconds = "" + s.athletePrEffort.elapsedTime;
 
@@ -52,6 +56,7 @@ public class AppSegmentsComparator {
     generateCSVForMyMaps(neverTriedPoints, neverTriedLabels);
     exportToLeafletJS(neverTriedPoints, neverTriedLabels);
     exportToLeafletMapWithNiceLabels(neverTriedPoints, neverTriedLabels);
+    exportPolylineToLeafletJS(stravaService.getSegmentPolyline(neverTriedSegments.get(0).id));
   }
 
   private static void placePointsInGoogleMaps(List<List<Double>> neverTriedPoints) {
@@ -173,6 +178,30 @@ public class AppSegmentsComparator {
 
       writer.println("</script></body></html>");
       System.out.println("Map with nice labels saved as: map_nice_labels.html");
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private static void exportPolylineToLeafletJS(String googlePolylineFormat) {
+    try (PrintWriter writer = new PrintWriter(new File("map_polyline.html"))) {
+      writer.println("<!DOCTYPE html><html><head><meta charset='utf-8'>");
+      writer.println("<link rel='stylesheet' href='https://unpkg.com/leaflet/dist/leaflet.css' />");
+      writer.println("<script src='https://unpkg.com/leaflet/dist/leaflet.js'></script>");
+      writer.println("<script src='https://unpkg.com/@mapbox/polyline'></script>"); // for decoding polyline
+      writer.println("</head><body>");
+      writer.println("<div id='map' style='height: 100vh; width: 100vw;'></div>");
+      writer.println("<script>");
+      writer.println("var map = L.map('map').setView([0, 0], 13);");
+      writer.println("L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);");
+
+      writer.println("var decoded = polyline.decode(\"" + googlePolylineFormat + "\");");
+      writer.println("var latlngs = decoded.map(function(pair) { return [pair[0], pair[1]]; });");
+      writer.println("L.polyline(latlngs, {color: 'blue', weight: 4}).addTo(map);");
+      writer.println("map.fitBounds(latlngs);");
+
+      writer.println("</script></body></html>");
+      System.out.println("\nMap file generated: map_polyline.html. Open it in your browser.");
     } catch (IOException e) {
       e.printStackTrace();
     }

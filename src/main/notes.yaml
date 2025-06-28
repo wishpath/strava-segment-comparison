@@ -1,0 +1,15 @@
+to_do:
+  - show all segments (polylines) on the map
+  - pins should be small
+  - pins and polylines should be colored:
+      - not tried: gray
+      - best one: blue
+      - worst one: red
+      - middle ones: red-blue gradient
+      - course record ones: with crown pin
+  - when hovered should provide:
+      - current best pace
+      - current best time
+      - length
+      - gradient %
+      - delta altitude m

@@ -1,0 +1,13 @@
+<!DOCTYPE html><html><head><meta charset='utf-8'>
+<link rel='stylesheet' href='https://unpkg.com/leaflet/dist/leaflet.css' />
+<script src='https://unpkg.com/leaflet/dist/leaflet.js'></script></head><body>
+<div id='map' style='height: 100vh'></div>
+<script>var map = L.map('map').setView([54.903629,23.82086], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+L.marker([54.903629,23.82086]).addTo(map).bindPopup("Į kalniuką kamšos miško takeliu");
+L.marker([54.901315,23.830255]).addTo(map).bindPopup("Akademija laiptai");
+L.marker([54.902795,23.82055]).addTo(map).bindPopup("Nuo upelio iki vartų");
+L.marker([54.924078,23.793804]).addTo(map).bindPopup("A. Kaniūkų iki Tolivardžių Climb");
+L.marker([54.931102,23.794079]).addTo(map).bindPopup("Volterio užkilimas 🏗");
+L.marker([54.93383,23.785474]).addTo(map).bindPopup("Nevėžis Raudondvaris Run Climb");
+</script></body></html>

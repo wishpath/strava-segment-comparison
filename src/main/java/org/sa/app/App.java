@@ -33,6 +33,7 @@ public class App {
       .forEach(s -> {
 
         String myBestTimeSeconds = s.userPersonalRecordDTO == null ? "-" : "" + s.userPersonalRecordDTO.elapsedTime;
+        s.polyline = stravaService.getSegmentPolyline(s.id);
         segments.add(s);
 
         System.out.println(s.name);
@@ -46,11 +47,10 @@ public class App {
         System.out.println();
       });
 
-    exportToLeafletJS(segments);
-    exportPolylineToLeafletJS(stravaService.getSegmentPolyline(segments.get(0).id));
+    exportSegmentsWithPolylinesToLeafletJS(segments);
 
     try {
-      Desktop.getDesktop().browse(new File("map.html").getAbsoluteFile().toURI());
+      Desktop.getDesktop().browse(new File("map_with_polylines.html").getAbsoluteFile().toURI());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -60,50 +60,35 @@ public class App {
     return latLng.get(0) + "," + latLng.get(1);
   }
 
-  private static void exportToLeafletJS(List<SegmentDTO> segments) {
-    try (PrintWriter writer = new PrintWriter(new File("map.html"))) {
-      writer.println("<!DOCTYPE html><html><head><meta charset='utf-8'>");
-      writer.println("<link rel='stylesheet' href='https://unpkg.com/leaflet/dist/leaflet.css' />");
-      writer.println("<script src='https://unpkg.com/leaflet/dist/leaflet.js'></script></head><body>");
-      writer.println("<div id='map' style='height: 100vh'></div>");
-      writer.println("<script>var map = L.map('map').setView([" + getGoogleMapsPoint(segments.get(0).startLatitudeLongitude) + "], 13);");
-      writer.println("L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);");
-
-      for (int i = 0; i < segments.size(); i++) {
-        List<Double> point = segments.get(i).startLatitudeLongitude;
-        String label = segments.get(i).name.replace("\"", "\\\"");
-        writer.println("L.marker([" + point.get(0) + "," + point.get(1) + "]).addTo(map).bindPopup(\"" + label + "\");");
-      }
-
-      writer.println("</script></body></html>");
-      System.out.println("\nMap file generated: map.html. Open it in your browser.");
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  private static void exportPolylineToLeafletJS(String googlePolylineFormat) {
-    try (PrintWriter writer = new PrintWriter(new File("map_polyline.html"))) {
+  private static void exportSegmentsWithPolylinesToLeafletJS(List<SegmentDTO> segments) {
+    try (PrintWriter writer = new PrintWriter(new File("map_with_polylines.html"))) {
       writer.println("<!DOCTYPE html><html><head><meta charset='utf-8'>");
       writer.println("<link rel='stylesheet' href='https://unpkg.com/leaflet/dist/leaflet.css' />");
       writer.println("<script src='https://unpkg.com/leaflet/dist/leaflet.js'></script>");
-      writer.println("<script src='https://unpkg.com/@mapbox/polyline'></script>"); // for decoding polyline
+      writer.println("<script src='https://unpkg.com/@mapbox/polyline'></script>");
       writer.println("</head><body>");
       writer.println("<div id='map' style='height: 100vh; width: 100vw;'></div>");
       writer.println("<script>");
-      writer.println("var map = L.map('map').setView([0, 0], 13);");
+      writer.println("var map = L.map('map').setView([" + segments.get(0).startLatitudeLongitude.get(0) + "," + segments.get(0).startLatitudeLongitude.get(1) + "], 13);");
       writer.println("L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);");
 
-      writer.println("var decoded = polyline.decode(\"" + googlePolylineFormat + "\");");
-      writer.println("var latlngs = decoded.map(function(pair) { return [pair[0], pair[1]]; });");
-      writer.println("L.polyline(latlngs, {color: 'blue', weight: 4}).addTo(map);");
-      writer.println("map.fitBounds(latlngs);");
+      for (SegmentDTO segment : segments) {
+        List<Double> p = segment.startLatitudeLongitude;
+        String label = segment.name.replace("\"", "\\\"");
+        writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "]).addTo(map).bindPopup(\"" + label + "\");");
+        if (segment.polyline != null && !segment.polyline.isEmpty()) {
+          writer.println("var decoded = polyline.decode(\"" + segment.polyline + "\");");
+          writer.println("var latlngs = decoded.map(function(pair) { return [pair[0], pair[1]]; });");
+          writer.println("L.polyline(latlngs, {color: 'blue', weight: 4}).addTo(map);");
+        }
+      }
 
       writer.println("</script></body></html>");
-      System.out.println("\nMap file generated: map_polyline.html. Open it in your browser.");
+      System.out.println("\nMap file generated: map_with_polylines.html. Open it in your browser.");
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
+
 
 }

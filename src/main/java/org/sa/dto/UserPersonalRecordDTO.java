@@ -11,5 +11,5 @@ public class UserPersonalRecordDTO {
   @JsonProperty("distance") public double distance;
   @JsonProperty("start_date") public String startDate;
   @JsonProperty("start_date_local") public String startDateLocal;
-  @JsonProperty("is_kom") public boolean isKom;
+  @JsonProperty("is_kom") public boolean isKingOfMountain;
 }

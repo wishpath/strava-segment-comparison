@@ -41,11 +41,18 @@ public class MapService {
   private static void writeSegment(SegmentDTO segment, PrintWriter writer) {
     List<Double> p = segment.startLatitudeLongitude;
     String label = segment.name.replace("\"", "\\\"");
-    writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "]).addTo(map).bindPopup(\"" + label + "\");");
+    String color = segment.userPersonalRecordDTO == null ? "grey" : segment.userPersonalRecordDTO.isKingOfMountain ? "blue" : segment.colorHex;
+    boolean isKingOfMountain = segment.userPersonalRecordDTO == null ? false : segment.userPersonalRecordDTO.isKingOfMountain;
+
+    if (isKingOfMountain)
+      writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "], {icon: L.divIcon({className: 'crown-icon', html: '&#x1F451;', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+    else
+      writer.println("L.circleMarker([" + p.get(0) + "," + p.get(1) + "], {color: '" + color + "', fillColor: '" + color + "', opacity: 0.5, fillOpacity: 0.5, radius: 5}).addTo(map).bindPopup(\"" + label + "\");");
+
     if (segment.polyline != null && !segment.polyline.isEmpty()) {
       writer.println("var decoded = polyline.decode(\"" + segment.polyline + "\");");
       writer.println("var latlngs = decoded.map(function(pair) { return [pair[0], pair[1]]; });");
-      writer.println("L.polyline(latlngs, {color: '" + segment.colorHex + "', weight: 4}).addTo(map);");
+      writer.println("L.polyline(latlngs, {color: '" + color + "', weight: 4, opacity: 0.5}).addTo(map);");
     }
   }
 }

@@ -44,8 +44,4 @@ public class App {
     //store polyline
     StorageUtil.saveSegmentsToPropertiesFile(id_polyline, "polylines.properties");
   }
-
-
-
-
 }

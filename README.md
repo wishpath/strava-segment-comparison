@@ -12,7 +12,7 @@ Compare athlete's Strava segment results.
 ## Settings
 * Build and run: Intellij
 * Gradle: wrapper (8.5)
-* Gradle JVM: 22
+* Gradle JVM: 21
 * Java Home: 22
 
 ## Set personal variables

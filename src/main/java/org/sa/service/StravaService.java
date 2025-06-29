@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.sa.config.Props;
-import org.sa.dto.Segment;
+import org.sa.dto.SegmentDTO;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -62,13 +62,13 @@ public class StravaService {
     }
   }
 
-  public List<Segment> parseSegments(String json) throws IOException {
+  public List<SegmentDTO> parseSegments(String json) throws IOException {
     ObjectMapper mapper = new ObjectMapper();
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     return mapper.readValue(json, new TypeReference<>() {});
   }
 
-  public List<Segment> getStarredSegments() throws IOException {
+  public List<SegmentDTO> getStarredSegments() throws IOException {
     return parseSegments(getStarredSegmentsJson());
   }
 

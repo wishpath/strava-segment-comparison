@@ -51,33 +51,6 @@ marker.on('move', function() {
   var p = map.latLngToLayerPoint(marker.getLatLng());
   L.DomUtil.setPosition(label, p);
 });
-var marker = L.marker([54.924078,23.793804]).addTo(map);
-var label = createLabel("A. Kaniūkų iki Tolivardžių Climb");
-map.getPanes().overlayPane.appendChild(label);
-var pos = map.latLngToLayerPoint(marker.getLatLng());
-L.DomUtil.setPosition(label, pos);
-marker.on('move', function() {
-  var p = map.latLngToLayerPoint(marker.getLatLng());
-  L.DomUtil.setPosition(label, p);
-});
-var marker = L.marker([54.931102,23.794079]).addTo(map);
-var label = createLabel("Volterio užkilimas 🏗");
-map.getPanes().overlayPane.appendChild(label);
-var pos = map.latLngToLayerPoint(marker.getLatLng());
-L.DomUtil.setPosition(label, pos);
-marker.on('move', function() {
-  var p = map.latLngToLayerPoint(marker.getLatLng());
-  L.DomUtil.setPosition(label, p);
-});
-var marker = L.marker([54.93383,23.785474]).addTo(map);
-var label = createLabel("Nevėžis Raudondvaris Run Climb");
-map.getPanes().overlayPane.appendChild(label);
-var pos = map.latLngToLayerPoint(marker.getLatLng());
-L.DomUtil.setPosition(label, pos);
-marker.on('move', function() {
-  var p = map.latLngToLayerPoint(marker.getLatLng());
-  L.DomUtil.setPosition(label, p);
-});
 map.on('zoomend moveend', function() {
   document.querySelectorAll('.leaflet-label').forEach(function(label, i) {
     var marker = map._layers[Object.keys(map._layers)[i + 1]];

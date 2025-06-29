@@ -1,10 +1,11 @@
 package org.sa.app;
 
-import org.sa.dto.Segment;
+import org.sa.dto.SegmentDTO;
 import org.sa.service.CoordinateService;
 import org.sa.service.ScoringService;
 import org.sa.service.StravaService;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,30 +22,30 @@ public class AppSegmentsComparator {
   public static void main(String[] args) throws IOException {
     List<List<Double>> neverTriedPoints = new ArrayList<>();
     List<String> neverTriedLabels = new ArrayList<>();
-    List<Segment> neverTriedSegments = new ArrayList<>();
+    List<SegmentDTO> neverTriedSegments = new ArrayList<>();
 
     stravaService
       .getStarredSegments()
       .stream()
       .filter(s -> CoordinateService.isCloseToHome(s))
       .filter(s -> s.activityType.equals("Run"))
-      .filter(s -> s.averageGrade > 1)
+      .filter(s -> s.averageGradePercent > 1)
       .sorted(Comparator.comparingInt(CoordinateService::getDistanceFromHomeInMeters))
       .sorted(Comparator.comparingInt(ScoringService::getPerformanceScore))
       .forEach(s -> {
 
         String myBestTimeSeconds = "-";
-        if (s.athletePrEffort == null) {
-          neverTriedPoints.add(s.startLatLng);
+        if (s.userPersonalRecordDTO == null) {
+          neverTriedPoints.add(s.startLatitudeLongitude);
           neverTriedLabels.add(s.name);
           neverTriedSegments.add(s);
         }
-        else myBestTimeSeconds = "" + s.athletePrEffort.elapsedTime;
+        else myBestTimeSeconds = "" + s.userPersonalRecordDTO.elapsedTime;
 
         System.out.println(s.name);
-        System.out.println("     distance (m): " + (int)s.distance);
-        System.out.println("     avg grade (%): " + s.averageGrade);
-        System.out.println("     delta altitude (m): " + (int)(s.elevationHigh - s.elevationLow));
+        System.out.println("     distance (m): " + (int)s.distanceMeters);
+        System.out.println("     avg grade (%): " + s.averageGradePercent);
+        System.out.println("     delta altitude (m): " + (int)(s.elevationHighMeters - s.elevationLowMeters));
         System.out.println("     my best time (s): " + myBestTimeSeconds);
         System.out.println("     home proximity (m): " + CoordinateService.getDistanceFromHomeInMeters(s));
         System.out.println("     https://www.strava.com/segments/" + s.id);
@@ -57,6 +58,12 @@ public class AppSegmentsComparator {
     exportToLeafletJS(neverTriedPoints, neverTriedLabels);
     exportToLeafletMapWithNiceLabels(neverTriedPoints, neverTriedLabels);
     exportPolylineToLeafletJS(stravaService.getSegmentPolyline(neverTriedSegments.get(0).id));
+
+    try {
+      Desktop.getDesktop().browse(new File("map.html").getAbsoluteFile().toURI());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   private static void placePointsInGoogleMaps(List<List<Double>> neverTriedPoints) {

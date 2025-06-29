@@ -1,7 +1,7 @@
 package org.sa.service;
 
 import org.sa.config.Props;
-import org.sa.dto.Segment;
+import org.sa.dto.SegmentDTO;
 
 import java.util.List;
 
@@ -22,12 +22,12 @@ public class CoordinateService {
     return (int) (R * c);
   }
 
-  public static int getDistanceFromHomeInMeters(Segment segment) {
-    List<Double> to = segment.startLatLng;
+  public static int getDistanceFromHomeInMeters(SegmentDTO segment) {
+    List<Double> to = segment.startLatitudeLongitude;
     return getDistanceInMeters(Props.HOME_COORDINATE, to);
   }
 
-  public static boolean isCloseToHome(Segment segment) {
+  public static boolean isCloseToHome(SegmentDTO segment) {
     return CoordinateService.getDistanceFromHomeInMeters(segment) < Props.DEFINITION_OF_CLOSENESS_METERS;
   }
 }

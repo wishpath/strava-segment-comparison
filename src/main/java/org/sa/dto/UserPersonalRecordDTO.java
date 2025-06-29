@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AthletePrEffort {
+public class UserPersonalRecordDTO {
   @JsonProperty("id") public long id;
   @JsonProperty("activity_id") public long activityId;
   @JsonProperty("elapsed_time") public int elapsedTime;

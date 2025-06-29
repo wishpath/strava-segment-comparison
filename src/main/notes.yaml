@@ -1,5 +1,5 @@
 to_do:
-  - show all segments (polylines) on the map
+  - save polylines to local storage
   - pins should be small
   - pins and polylines should be colored:
       - not tried: gray

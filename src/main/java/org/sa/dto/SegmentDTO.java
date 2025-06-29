@@ -27,4 +27,6 @@ public class SegmentDTO {
   @JsonProperty("athlete_pr_effort") public UserPersonalRecordDTO userPersonalRecordDTO;
   @JsonProperty("starred_date") public String starredDate; // date when segment was starred
   public String polyline; //Google Polyline is a lossy compressed format for encoding a series of lat/lng coordinates.
+  public int score;
+  public String colorHex;
 }

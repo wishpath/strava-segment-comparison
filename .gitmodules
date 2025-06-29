@@ -1,0 +1,3 @@
+[submodule ".mod/console-color"]
+	path = .mod/console-color
+	url = https://github.com/wishpath/console-color.git

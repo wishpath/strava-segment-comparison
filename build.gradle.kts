@@ -14,6 +14,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
     implementation("org.json:json:20240303")
+    implementation(project(":console-color"))
 }
 
 tasks.test {

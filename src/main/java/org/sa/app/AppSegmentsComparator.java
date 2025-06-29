@@ -53,7 +53,6 @@ public class AppSegmentsComparator {
         System.out.println();
       });
 
-    generateCSVForMyMaps(neverTriedPoints, neverTriedLabels);
     exportToLeafletJS(neverTriedPoints, neverTriedLabels);
     exportToLeafletMapWithNiceLabels(neverTriedPoints, neverTriedLabels);
     exportPolylineToLeafletJS(stravaService.getSegmentPolyline(neverTriedSegments.get(0).id));
@@ -67,23 +66,6 @@ public class AppSegmentsComparator {
 
   private static String getGoogleMapsPoint(List<Double> latLng) {
     return latLng.get(0) + "," + latLng.get(1);
-  }
-
-  private static void generateCSVForMyMaps(List<List<Double>> points, List<String> labels) {
-    try (PrintWriter writer = new PrintWriter(new File("points.csv"))) {
-      writer.println("Name,Latitude,Longitude");
-      for (int i = 0; i < points.size(); i++) {
-        List<Double> latLng = points.get(i);
-        String label = labels.get(i);
-        writer.println(label + "," + latLng.get(0) + "," + latLng.get(1));
-      }
-      System.out.println("\nCSV generated: points.csv. How to import this into Google My Maps:\n" +
-          "     • go to https://www.google.com/maps/d/\n" +
-          "     • create a new map\n" +
-          "     • import generated csv");
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
 
   private static void exportToLeafletJS(List<List<Double>> points, List<String> labels) {

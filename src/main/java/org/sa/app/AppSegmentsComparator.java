@@ -53,7 +53,6 @@ public class AppSegmentsComparator {
         System.out.println();
       });
 
-    placePointsInGoogleMaps(neverTriedPoints);
     generateCSVForMyMaps(neverTriedPoints, neverTriedLabels);
     exportToLeafletJS(neverTriedPoints, neverTriedLabels);
     exportToLeafletMapWithNiceLabels(neverTriedPoints, neverTriedLabels);
@@ -64,27 +63,6 @@ public class AppSegmentsComparator {
     } catch (IOException e) {
       e.printStackTrace();
     }
-  }
-
-  private static void placePointsInGoogleMaps(List<List<Double>> neverTriedPoints) {
-    StringBuilder googleMaps = new StringBuilder("https://www.google.com/maps/dir/?api=1&travelmode=walking");
-
-    if (!neverTriedPoints.isEmpty()) {
-      List<Double> origin = neverTriedPoints.get(0);
-      googleMaps.append("&origin=").append(getGoogleMapsPoint(origin));
-
-      List<Double> destination = neverTriedPoints.get(neverTriedPoints.size() - 1);
-      googleMaps.append("&destination=").append(getGoogleMapsPoint(destination));
-
-      if (neverTriedPoints.size() > 2) {
-        googleMaps.append("&waypoints=");
-        for (int i = 1; i < neverTriedPoints.size() - 1; i++) {
-          googleMaps.append(getGoogleMapsPoint(neverTriedPoints.get(i)));
-          if (i < neverTriedPoints.size() - 2) googleMaps.append("|");
-        }
-      }
-    }
-    System.out.println("\n Never tried Segments on the map: " + googleMaps.toString());
   }
 
   private static String getGoogleMapsPoint(List<Double> latLng) {

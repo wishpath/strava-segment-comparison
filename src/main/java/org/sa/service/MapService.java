@@ -6,7 +6,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 public class MapService {
   private static final String DARKER_GRAY = "#505050";
@@ -34,7 +33,10 @@ public class MapService {
       writer.println("var map = L.map('map').setView([" + segments.get(0).startLatitudeLongitude.get(0) + "," + segments.get(0).startLatitudeLongitude.get(1) + "], 13);");
       writer.println("L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);");
 
-      for (SegmentDTO segment : segments) writeSegment(segment, writer);
+      for (SegmentDTO s : segments) {
+        writePin(s, writer, buildLabel(s));
+        writePolyline(s, writer);
+      }
 
       writer.println("</script></body></html>");
       System.out.println("\nMap file generated: map_with_polylines.html. Open it in your browser.");
@@ -43,22 +45,7 @@ public class MapService {
     }
   }
 
-  private static void writeSegment(SegmentDTO s, PrintWriter writer) {
-
-    List<Double> p = s.startLatitudeLongitude;
-
-    String label = buildSegmentLabel(s);
-
-
-    if (s.isKing)
-      writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "], {icon: L.divIcon({className: 'crown-icon', html: '" + CROWN_EMOJI + "', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
-    else if (s.isWeakest)
-      writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "], {icon: L.divIcon({className: 'crown-icon', html: '<div style=\"font-size: 20px;\">" + SKULL_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
-    else if (s.isStrongest)
-      writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "], {icon: L.divIcon({className: 'crown-icon', html: '<div style=\"font-size: 11px;\">" + STRONG_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
-    else
-      writer.println("L.circleMarker([" + p.get(0) + "," + p.get(1) + "], {color: '" + s.webColor + "', fillColor: '" + s.webColor + "', opacity: 0.65, fillOpacity: 0.65, radius: 4.5}).addTo(map).bindPopup(\"" + label + "\");");
-
+  private static void writePolyline(SegmentDTO s, PrintWriter writer) {
     if (s.polyline != null && !s.polyline.isEmpty()) {
       String escapedPolyline = s.polyline.replace("\\", "\\\\");
       writer.println("var decoded = polyline.decode(\"" + escapedPolyline + "\");");
@@ -67,17 +54,30 @@ public class MapService {
     }
   }
 
-//  private static String buildSegmentLabel(SegmentDTO s) {
-//    return  "<a href=\\\"" + s.link + "\\\" target=\\\"_blank\\\">" + s.name.replace("\"", "\\\\\"") + "</a>";
+//  private static void writePin(SegmentDTO s, PrintWriter writer, String label) {
+//    List<Double> p = s.startLatitudeLongitude;
+//    if (s.isKing)
+//      writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "], {icon: L.divIcon({className: 'crown-icon', html: '" + CROWN_EMOJI + "', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+//    else if (s.isWeakest)
+//      writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "], {icon: L.divIcon({className: 'crown-icon', html: '<div style=\"font-size: 20px;\">" + SKULL_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+//    else if (s.isStrongest)
+//      writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "], {icon: L.divIcon({className: 'crown-icon', html: '<div style=\"font-size: 11px;\">" + STRONG_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+//    else
+//      writer.println("L.circleMarker([" + p.get(0) + "," + p.get(1) + "], {color: '" + s.webColor + "', fillColor: '" + s.webColor + "', opacity: 0.65, fillOpacity: 0.65, radius: 4.5}).addTo(map).bindPopup(\"" + label + "\");");
 //  }
 
-//  private static String buildSegmentLabel(SegmentDTO s) {
-//    String score = "<span style='color:red'>" + s.score + "</span>";
-//    return "<a href=\\\"" + s.link + "\\\" target=\\\"_blank\\\">" + s.name.replace("\"", "\\\\\"") + "</a>" +
-//        "<br/>Score: " + score;
-//  }
+  private static void writePin(SegmentDTO s, PrintWriter writer, String label) {
+    if (s.isKing)
+      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'crown-icon', html: '" + CROWN_EMOJI + "', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+    else if (s.isWeakest)
+      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'crown-icon', html: '<div style=\"font-size: 20px;\">" + SKULL_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+    else if (s.isStrongest)
+      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'crown-icon', html: '<div style=\"font-size: 11px;\">" + STRONG_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+    else
+      writer.println("L.circleMarker([" + s.coordinate + "], {color: '" + s.webColor + "', fillColor: '" + s.webColor + "', opacity: 0.65, fillOpacity: 0.65, radius: 4.5}).addTo(map).bindPopup(\"" + label + "\");");
+  }
 
-  private static String buildSegmentLabel(SegmentDTO s) {
+  private static String buildLabel(SegmentDTO s) {
     String score = "<span style='color:red'>" + s.score + "</span>";
     String pace = (s.paceString != null && !s.paceString.isEmpty()) ? s.paceString : "N/A";
     String bestTime = (s.bestTimeString != null && !s.bestTimeString.isEmpty()) ? s.bestTimeString : "N/A";
@@ -93,45 +93,4 @@ public class MapService {
         "<br/>Gradient: " + grade +
         "<br/>Delta altitude: " + deltaAlt;
   }
-
-
-//  private static String buildSegmentLabel(SegmentDTO s) {
-//    String score = "<span style='color:red'>" + s.score + "</span>";
-//    String pace = (s.pace != null && !s.pace.isEmpty()) ? s.pace : "N/A";
-//    String bestTime = (s.bestTimeString != null && !s.bestTimeString.isEmpty()) ? s.bestTimeString : "N/A";
-//    String distanceM = String.format("%.0f m", s.distanceMeters);
-//    String grade = String.format("%.1f%%", s.averageGradePercent);
-//    String deltaAlt = String.format("▲ %.0f m", s.deltaAltitude);
-//
-//    return "<a href=\"" + s.link + "\" target=\"_blank\">" + s.name.replace("\"", "\\\"") + "</a>" +
-//        "<br/>Score: " + score +
-//        "<br/>Pace: " + pace +
-//        "<br/>Best time: " + bestTime +
-//        "<br/>Length: " + distanceM +
-//        "<br/>Gradient: " + grade +
-//        "<br/>Delta altitude: " + deltaAlt;
-//  }
-
-//  private static String escapeHtml(String s) {
-//    if (s == null) return "";
-//    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;");
-//  }
-//
-//  private static String buildSegmentLabel(SegmentDTO s) {
-//    String score = "<span style='color:red'>" + s.score + "</span>";
-//    String pace = (s.pace != null && !s.pace.isEmpty()) ? s.pace : "N/A";
-//    String bestTime = (s.bestTimeString != null && !s.bestTimeString.isEmpty()) ? s.bestTimeString : "N/A";
-//    String distanceM = String.format("%.0f m", s.distanceMeters);
-//    String grade = String.format("%.1f%%", s.averageGradePercent);
-//    String deltaAlt = String.format("▲ %.0f m", s.deltaAltitude);
-//
-//    return "<a href=\"" + s.link + "\" target=\"_blank\">" + escapeHtml(s.name) + "</a>" +
-//        "<br/>Score: " + score +
-//        "<br/>Pace: " + pace +
-//        "<br/>Best time: " + bestTime +
-//        "<br/>Length: " + distanceM +
-//        "<br/>Gradient: " + grade +
-//        "<br/>Delta altitude: " + deltaAlt;
-//  }
-
 }

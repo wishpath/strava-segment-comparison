@@ -1,8 +1,2 @@
 to_do:
-  - label should provide additionally to name (each new line):
-      - score (absolute) (red)
-      - current best pace
-      - current best time
-      - length
-      - gradient %
-      - delta altitude m
+  -

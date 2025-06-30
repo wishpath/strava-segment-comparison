@@ -32,6 +32,7 @@ public class App {
       .peek(s -> s.paceString = segmentsProcessor.calculatePace(s))
       .peek(s -> s.bestTimeString = segmentsProcessor.calculateBestTime(s))
       .peek(s -> s.deltaAltitude = s.elevationHighMeters - s.elevationLowMeters)
+      .peek(s -> s.coordinate = s.startLatitudeLongitude.get(0) + "," + s.startLatitudeLongitude.get(1))
       .forEach(s -> segments.add(s));
 
     PrintFacade.printSegments(segments,segmentsProcessor);

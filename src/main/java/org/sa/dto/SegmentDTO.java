@@ -30,4 +30,5 @@ public class SegmentDTO {
   public int score;
   public String webColor; // color for pin and polyline on the map
   public boolean isWeakest = false; //Out of segments pool, this has lowest score;
+  public boolean isKing = false; // better than all other athletes
 }

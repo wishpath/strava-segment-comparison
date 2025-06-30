@@ -26,6 +26,7 @@ public class App {
       .sorted(Comparator.comparingInt(segmentsProcessor::getPerformanceScore))
       .peek(segment -> PolylineFacade.fetchPolyline(segment, id_polyline, segments, stravaService, segmentsProcessor))
       .peek(segment -> segment.score = segmentsProcessor.getPerformanceScore(segment))
+      .peek(segment -> segment.isKing = segmentsProcessor.isKing(segment))
       .forEach(segment -> segments.add(segment));
 
     PrintFacade.printSegments(segments,segmentsProcessor);

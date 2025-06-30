@@ -7,18 +7,18 @@
 <script>
 var map = L.map('map').setView([54.903629,23.82086], 13);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-L.circleMarker([54.903629,23.82086], {color: '#505050', fillColor: '#505050', opacity: 0.65, fillOpacity: 0.65, radius: 4.5}).addTo(map).bindPopup("Į kalniuką kamšos miško takeliu");
+L.circleMarker([54.903629,23.82086], {color: 'black', fillColor: 'black', opacity: 0.65, fillOpacity: 0.65, radius: 4.5}).addTo(map).bindPopup("Į kalniuką kamšos miško takeliu");
 var decoded = polyline.decode("sjbnIkokpCJHDHH@NJD?DDHEXLHJF@@HLNL@FTA^Hx@?VBHFABDLp@FTBD?HFNDDD@Pt@TLBHD@RZNLDVDBEDBGAHEHH^@|@");
 var latlngs = decoded.map(function(pair) { return [pair[0], pair[1]]; });
-L.polyline(latlngs, {color: '#505050', weight: 4, opacity: 0.65}).addTo(map);
-L.circleMarker([54.901315,23.830255], {color: '#505050', fillColor: '#505050', opacity: 0.65, fillOpacity: 0.65, radius: 4.5}).addTo(map).bindPopup("Akademija laiptai");
+L.polyline(latlngs, {color: 'black', weight: 4, opacity: 0.65}).addTo(map);
+L.circleMarker([54.901315,23.830255], {color: 'black', fillColor: 'black', opacity: 0.65, fillOpacity: 0.65, radius: 4.5}).addTo(map).bindPopup("Akademija laiptai");
 var decoded = polyline.decode("e|anIajmpCB`@Nh@T\\\\\\X@RHFFT@PE?E?@DCJQTQ");
 var latlngs = decoded.map(function(pair) { return [pair[0], pair[1]]; });
-L.polyline(latlngs, {color: '#505050', weight: 4, opacity: 0.65}).addTo(map);
-L.circleMarker([54.902795,23.82055], {color: '#505050', fillColor: '#505050', opacity: 0.65, fillOpacity: 0.65, radius: 4.5}).addTo(map).bindPopup("Nuo upelio iki vartų");
+L.polyline(latlngs, {color: 'black', weight: 4, opacity: 0.65}).addTo(map);
+L.circleMarker([54.902795,23.82055], {color: 'black', fillColor: 'black', opacity: 0.65, fillOpacity: 0.65, radius: 4.5}).addTo(map).bindPopup("Nuo upelio iki vartų");
 var decoded = polyline.decode("mebnImmkpCHTTLJJ~A`Aj@f@ZPNNZNJ@R\\^ZLR\\^Nf@TTDNRZFHJDPTFPDVPhB");
 var latlngs = decoded.map(function(pair) { return [pair[0], pair[1]]; });
-L.polyline(latlngs, {color: '#505050', weight: 4, opacity: 0.65}).addTo(map);
+L.polyline(latlngs, {color: 'black', weight: 4, opacity: 0.65}).addTo(map);
 L.marker([54.92145,23.829657], {icon: L.divIcon({className: 'crown-icon', html: '&#x1F451;', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup("Šilo Loma");
 var decoded = polyline.decode("azenIifmpCBWCOe@w@_@{@GUe@{@Oq@Oc@I_AKe@IOIi@GQIq@EIAQBGCUEOKMM@Ok@EIKCAHEAYq@k@s@I[");
 var latlngs = decoded.map(function(pair) { return [pair[0], pair[1]]; });

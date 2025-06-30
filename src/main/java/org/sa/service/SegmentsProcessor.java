@@ -29,7 +29,7 @@ public class SegmentsProcessor {
 
     for (SegmentDTO s : segments) {
       if (s.score == 0) s.webColor = "black";
-      else if (s.userPersonalRecordDTO != null && s.userPersonalRecordDTO.isKingOfMountain) s.webColor = "blue";
+      else if (s.isKing) s.webColor = "blue";
       else {
         int colorValue = (int) ((double)(s.score - minScore) * times);
         s.webColor = hexColorUtil.hexColorFromRedThroughYellowToGreen(colorValue);
@@ -42,7 +42,7 @@ public class SegmentsProcessor {
 
     for (SegmentDTO s : segments)
       if (s.userPersonalRecordDTO != null)
-        if (!s.userPersonalRecordDTO.isKingOfMountain)
+        if (!s.isKing)
           minScore = Math.min(minScore, s.score);
 
     return minScore;
@@ -53,7 +53,7 @@ public class SegmentsProcessor {
 
     for (SegmentDTO s : segments)
       if (s.userPersonalRecordDTO != null)
-        if (!s.userPersonalRecordDTO.isKingOfMountain)
+        if (!s.isKing)
           maxScore = Math.max(maxScore, s.score);
 
     return maxScore;
@@ -64,9 +64,14 @@ public class SegmentsProcessor {
 
     for (SegmentDTO s : segments) {
       if (s.userPersonalRecordDTO != null)
-        if (!s.userPersonalRecordDTO.isKingOfMountain)
+        if (!s.isKing)
           if (s.score == minScore)
             s.isWeakest = true;
     }
+  }
+
+  public boolean isKing(SegmentDTO segment) {
+    if (segment.userPersonalRecordDTO == null) return false;
+    return segment.userPersonalRecordDTO.isKingOfMountain;
   }
 }

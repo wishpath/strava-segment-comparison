@@ -9,6 +9,10 @@ import java.io.PrintWriter;
 import java.util.List;
 
 public class MapService {
+  private static final String DARKER_GRAY = "#505050";
+  private static final String CROWN_EMOJI = "&#x1F451;";
+  private static final String SKULL_EMOJI = "&#x2620;";
+
   public static void openMap(String filename) {
     try {
       Desktop.getDesktop().browse(new File(filename).getAbsoluteFile().toURI());
@@ -39,23 +43,22 @@ public class MapService {
   }
 
   private static void writeSegment(SegmentDTO segment, PrintWriter writer) {
+
     List<Double> p = segment.startLatitudeLongitude;
     String label = segment.name.replace("\"", "\\\"");
-    String color = segment.userPersonalRecordDTO == null ? "#505050" : segment.userPersonalRecordDTO.isKingOfMountain ? "blue" : segment.webColor;
-    boolean isKingOfMountain = segment.userPersonalRecordDTO == null ? false : segment.userPersonalRecordDTO.isKingOfMountain;
 
-    if (isKingOfMountain)
-      writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "], {icon: L.divIcon({className: 'crown-icon', html: '&#x1F451;', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+    if (segment.isKing)
+      writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "], {icon: L.divIcon({className: 'crown-icon', html: '" + CROWN_EMOJI + "', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
     else if (segment.isWeakest)
-      writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "], {icon: L.divIcon({className: 'crown-icon', html: '<div style=\"font-size: 20px;\">&#x2620;</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+      writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "], {icon: L.divIcon({className: 'crown-icon', html: '<div style=\"font-size: 20px;\">" + SKULL_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
     else
-      writer.println("L.circleMarker([" + p.get(0) + "," + p.get(1) + "], {color: '" + color + "', fillColor: '" + color + "', opacity: 0.65, fillOpacity: 0.65, radius: 4.5}).addTo(map).bindPopup(\"" + label + "\");");
+      writer.println("L.circleMarker([" + p.get(0) + "," + p.get(1) + "], {color: '" + segment.webColor + "', fillColor: '" + segment.webColor + "', opacity: 0.65, fillOpacity: 0.65, radius: 4.5}).addTo(map).bindPopup(\"" + label + "\");");
 
     if (segment.polyline != null && !segment.polyline.isEmpty()) {
       String escapedPolyline = segment.polyline.replace("\\", "\\\\");
       writer.println("var decoded = polyline.decode(\"" + escapedPolyline + "\");");
       writer.println("var latlngs = decoded.map(function(pair) { return [pair[0], pair[1]]; });");
-      writer.println("L.polyline(latlngs, {color: '" + color + "', weight: 4, opacity: 0.65}).addTo(map);");
+      writer.println("L.polyline(latlngs, {color: '" + segment.webColor + "', weight: 4, opacity: 0.65}).addTo(map);");
     }
   }
 }

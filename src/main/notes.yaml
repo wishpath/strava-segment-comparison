@@ -1,8 +1,5 @@
 to_do:
-  - if KOM, dont consider for lowes or highest score
-  - the worst performance should show with scull and crossbones: ☠️
   - when hovered should provide:
-      -
       - score (absolute)
       - current best pace
       - current best time

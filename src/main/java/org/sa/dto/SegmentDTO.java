@@ -28,5 +28,6 @@ public class SegmentDTO {
   @JsonProperty("starred_date") public String starredDate; // date when segment was starred
   public String polyline; //Google Polyline is a lossy compressed format for encoding a series of lat/lng coordinates.
   public int score;
-  public String colorHex;
+  public String webColor; // color for pin and polyline on the map
+  public boolean isWeakest = false; //Out of segments pool, this has lowest score;
 }

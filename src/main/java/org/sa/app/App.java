@@ -1,6 +1,8 @@
 package org.sa.app;
 
 import org.sa.dto.SegmentDTO;
+import org.sa.facade.PolylineFacade;
+import org.sa.facade.PrintFacade;
 import org.sa.service.*;
 
 import java.io.IOException;
@@ -22,20 +24,13 @@ public class App {
       .filter(s -> s.averageGradePercent > 1)
       .sorted(Comparator.comparingInt(CoordinateService::getDistanceFromHomeInMeters))
       .sorted(Comparator.comparingInt(segmentsProcessor::getPerformanceScore))
-      .forEach(s -> {
+      .peek(segment -> PolylineFacade.fetchPolyline(segment, id_polyline, segments, stravaService, segmentsProcessor))
+      .peek(segment -> segment.score = segmentsProcessor.getPerformanceScore(segment))
+      .forEach(segment -> segments.add(segment));
 
-        if (id_polyline.containsKey(s.id)) s.polyline = id_polyline.get(s.id);
-        else {
-          s.polyline = stravaService.getSegmentPolyline(s.id);
-          id_polyline.put(s.id, s.polyline);
-        }
-
-        s.score = segmentsProcessor.getPerformanceScore(s);
-        segments.add(s);
-      });
-
-    PrintUtil.printSegments(segments,segmentsProcessor);
+    PrintFacade.printSegments(segments,segmentsProcessor);
     segmentsProcessor.setSegmentColors(segments);
+    segmentsProcessor.pickWorstSegments(segments);
 
     //map
     MapService.exportSegmentsWithPolylinesToLeafletJS(segments);
@@ -44,4 +39,6 @@ public class App {
     //store polyline
     StorageUtil.saveSegmentsToFile(id_polyline, "polylines.properties");
   }
+
+
 }

@@ -1,10 +1,12 @@
-package org.sa.service;
+package org.sa.facade;
 
 import org.sa.dto.SegmentDTO;
+import org.sa.service.CoordinateService;
+import org.sa.service.SegmentsProcessor;
 
 import java.util.List;
 
-public class PrintUtil {
+public class PrintFacade {
   public static final String RESET = "\u001B[0m";
   public static final String RED = "\u001B[31m";
 

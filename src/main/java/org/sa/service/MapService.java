@@ -41,13 +41,15 @@ public class MapService {
   private static void writeSegment(SegmentDTO segment, PrintWriter writer) {
     List<Double> p = segment.startLatitudeLongitude;
     String label = segment.name.replace("\"", "\\\"");
-    String color = segment.userPersonalRecordDTO == null ? "grey" : segment.userPersonalRecordDTO.isKingOfMountain ? "blue" : segment.colorHex;
+    String color = segment.userPersonalRecordDTO == null ? "#505050" : segment.userPersonalRecordDTO.isKingOfMountain ? "blue" : segment.webColor;
     boolean isKingOfMountain = segment.userPersonalRecordDTO == null ? false : segment.userPersonalRecordDTO.isKingOfMountain;
 
     if (isKingOfMountain)
       writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "], {icon: L.divIcon({className: 'crown-icon', html: '&#x1F451;', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+    else if (segment.isWeakest)
+      writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "], {icon: L.divIcon({className: 'crown-icon', html: '<div style=\"font-size: 20px;\">&#x2620;</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
     else
-      writer.println("L.circleMarker([" + p.get(0) + "," + p.get(1) + "], {color: '" + color + "', fillColor: '" + color + "', opacity: 0.65, fillOpacity: 0.65, radius: 5}).addTo(map).bindPopup(\"" + label + "\");");
+      writer.println("L.circleMarker([" + p.get(0) + "," + p.get(1) + "], {color: '" + color + "', fillColor: '" + color + "', opacity: 0.65, fillOpacity: 0.65, radius: 4.5}).addTo(map).bindPopup(\"" + label + "\");");
 
     if (segment.polyline != null && !segment.polyline.isEmpty()) {
       String escapedPolyline = segment.polyline.replace("\\", "\\\\");

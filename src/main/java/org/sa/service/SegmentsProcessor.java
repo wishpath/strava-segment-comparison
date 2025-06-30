@@ -20,23 +20,53 @@ public class SegmentsProcessor {
   }
 
   public void setSegmentColors(List<SegmentDTO> segments) {
-    int maxScore = 0;
-    int minScore = 100;
-
-    for (SegmentDTO s : segments) {
-      if (s.score == 0) continue;
-      maxScore = Math.max(maxScore, s.score);
-      minScore = Math.min(minScore, s.score);
-    }
+    int maxScore = getMaxScore(segments);
+    int minScore = getMinScore(segments);
 
     int range = maxScore - minScore;
     if (range == 0) range = 1;
     double times = 100 / (double) range;
 
     for (SegmentDTO s : segments) {
-      if (s.score == 0) continue;
-      int colorValue = (int) ((double)(s.score - minScore) * times);
-      s.colorHex = hexColorUtil.hexColorFromRedThroughYellowToGreen(colorValue);
+      if (s.score == 0) s.webColor = "black";
+      else if (s.userPersonalRecordDTO != null && s.userPersonalRecordDTO.isKingOfMountain) s.webColor = "blue";
+      else {
+        int colorValue = (int) ((double)(s.score - minScore) * times);
+        s.webColor = hexColorUtil.hexColorFromRedThroughYellowToGreen(colorValue);
+      }
+    }
+  }
+
+  private int getMinScore(List<SegmentDTO> segments) {
+    int minScore = 100;
+
+    for (SegmentDTO s : segments)
+      if (s.userPersonalRecordDTO != null)
+        if (!s.userPersonalRecordDTO.isKingOfMountain)
+          minScore = Math.min(minScore, s.score);
+
+    return minScore;
+  }
+
+  private int getMaxScore(List<SegmentDTO> segments) {
+    int maxScore = 0;
+
+    for (SegmentDTO s : segments)
+      if (s.userPersonalRecordDTO != null)
+        if (!s.userPersonalRecordDTO.isKingOfMountain)
+          maxScore = Math.max(maxScore, s.score);
+
+    return maxScore;
+  }
+
+  public void pickWorstSegments(List<SegmentDTO> segments) {
+    int minScore = getMinScore(segments);
+
+    for (SegmentDTO s : segments) {
+      if (s.userPersonalRecordDTO != null)
+        if (!s.userPersonalRecordDTO.isKingOfMountain)
+          if (s.score == minScore)
+            s.isWeakest = true;
     }
   }
 }

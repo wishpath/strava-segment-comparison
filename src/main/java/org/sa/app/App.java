@@ -42,6 +42,6 @@ public class App {
     MapService.openMap("map_with_polylines.html");
 
     //store polyline
-    StorageUtil.saveSegmentsToPropertiesFile(id_polyline, "polylines.properties");
+    StorageUtil.saveSegmentsToFile(id_polyline, "polylines.properties");
   }
 }

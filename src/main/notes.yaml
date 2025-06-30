@@ -1,6 +1,7 @@
 to_do:
   - when hovered should provide:
-      - score (worst always 0 - best always 100)
+      -
+      - score (absolute)
       - current best pace
       - current best time
       - length

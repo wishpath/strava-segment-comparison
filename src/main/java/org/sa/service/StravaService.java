@@ -90,6 +90,7 @@ public class StravaService {
   }
 
   public String getSegmentPolyline(long segmentId) {
+    System.out.print("extracting polyline; segment id: " + segmentId);
     try {
       URL url = new URL("https://www.strava.com/api/v3/segments/" + segmentId);
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -99,6 +100,7 @@ public class StravaService {
       try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
         String response = reader.lines().collect(Collectors.joining());
         String googlePolylineFormat = extractPolyline(response); // compressed segment track
+        System.out.println(" polyline: " + googlePolylineFormat);
         return googlePolylineFormat;
       }
     } catch (Exception e) {

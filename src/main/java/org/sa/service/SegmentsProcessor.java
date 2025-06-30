@@ -8,14 +8,14 @@ import java.util.List;
 public class SegmentsProcessor {
   HexColorUtil hexColorUtil = new HexColorUtil(new WebColorGradientCalculator());
 
-  public int getPerformanceScore(SegmentDTO segment) {
-    if (segment.userPersonalRecordDTO == null) return 0;
+  public int getPerformanceScore(SegmentDTO s) {
+    if (s.userPersonalRecordDTO == null) return 0;
 
-    int time = segment.userPersonalRecordDTO.elapsedTime;
+    int time = s.userPersonalRecordDTO.elapsedTime;
     if (time == 0) return 0;
 
-    double elevationGain = segment.elevationHighMeters - segment.elevationLowMeters;
-    double flatDistance = Math.max(0, segment.distanceMeters - elevationGain);
+    double elevationGain = s.elevationHighMeters - s.elevationLowMeters;
+    double flatDistance = Math.max(0, s.distanceMeters - elevationGain);
     return (int) (100 * (elevationGain + 0.1 * flatDistance) / time);
   }
 
@@ -70,8 +70,40 @@ public class SegmentsProcessor {
     }
   }
 
-  public boolean isKing(SegmentDTO segment) {
-    if (segment.userPersonalRecordDTO == null) return false;
-    return segment.userPersonalRecordDTO.isKingOfMountain;
+  public void pickBestSegments(List<SegmentDTO> segments) {
+    int maxScore = getMaxScore(segments);
+
+    for (SegmentDTO s : segments) {
+      if (s.userPersonalRecordDTO != null)
+        if (!s.isKing)
+          if (s.score == maxScore)
+            s.isStrongest = true;
+    }
+  }
+
+  public boolean isKing(SegmentDTO s) {
+    if (s.userPersonalRecordDTO == null) return false;
+    return s.userPersonalRecordDTO.isKingOfMountain;
+  }
+
+  /**
+   * Calculates pace as minutes and seconds per kilometer, e.g. "4m:30s /km".
+   */
+  public String calculatePace(SegmentDTO s) {
+    if (s.userPersonalRecordSeconds == null || s.distanceMeters <= 0) return "-1";
+    int totalSeconds = (int) Math.round(s.userPersonalRecordSeconds / (s.distanceMeters / 1000.0));
+    int min = totalSeconds / 60, sec = totalSeconds % 60;
+    return min + "m:" + (sec < 10 ? "0" : "") + sec + "s /km";
+  }
+
+  /**
+   * Formats best time as "Xm:YYs", e.g. "5m:00s" or "5m:07s".
+   */
+  public String calculateBestTime(SegmentDTO s) {
+    if (s.userPersonalRecordSeconds == null || s.userPersonalRecordSeconds <= 0) return "-1";
+    int secs = s.userPersonalRecordSeconds;
+    if (secs < 60) return "0m:" + (secs < 10 ? "0" : "") + secs + "s";
+    int min = secs / 60, sec = secs % 60;
+    return min + "m:" + (sec < 10 ? "0" : "") + sec + "s";
   }
 }

@@ -1,6 +1,6 @@
 to_do:
-  - when hovered should provide:
-      - score (absolute)
+  - label should provide additionally to name (each new line):
+      - score (absolute) (red)
       - current best pace
       - current best time
       - length

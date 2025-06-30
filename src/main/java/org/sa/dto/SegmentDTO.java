@@ -29,7 +29,11 @@ public class SegmentDTO {
   public String polyline; //Google Polyline is a lossy compressed format for encoding a series of lat/lng coordinates.
   public int score;
   public String webColor; // color for pin and polyline on the map
-  public boolean isWeakest = false; //Out of segments pool, this has lowest score;
+  public boolean isWeakest = false; //lowest score (not incl KOM)
   public boolean isKing = false; // better than all other athletes
   public String link; // to Strava segment page
+  public boolean isStrongest = false; //highest score (not incl KOM)
+  public String paceString;
+  public String bestTimeString;
+  public double deltaAltitude;
 }

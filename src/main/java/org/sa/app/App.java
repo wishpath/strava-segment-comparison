@@ -25,15 +25,19 @@ public class App {
       .filter(s -> s.averageGradePercent > 1)
       .sorted(Comparator.comparingInt(CoordinateService::getDistanceFromHomeInMeters))
       .sorted(Comparator.comparingInt(segmentsProcessor::getPerformanceScore))
-      .peek(segment -> PolylineFacade.fetchPolyline(segment, id_polyline, segments, stravaService, segmentsProcessor))
-      .peek(segment -> segment.score = segmentsProcessor.getPerformanceScore(segment))
-      .peek(segment -> segment.isKing = segmentsProcessor.isKing(segment))
-      .peek(segment -> segment.link = STRAVA_SEGMENT_URI + segment.id)
-      .forEach(segment -> segments.add(segment));
+      .peek(s -> PolylineFacade.fetchPolyline(s, id_polyline, segments, stravaService, segmentsProcessor))
+      .peek(s -> s.score = segmentsProcessor.getPerformanceScore(s))
+      .peek(s -> s.isKing = segmentsProcessor.isKing(s))
+      .peek(s -> s.link = STRAVA_SEGMENT_URI + s.id)
+      .peek(s -> s.paceString = segmentsProcessor.calculatePace(s))
+      .peek(s -> s.bestTimeString = segmentsProcessor.calculateBestTime(s))
+      .peek(s -> s.deltaAltitude = s.elevationHighMeters - s.elevationLowMeters)
+      .forEach(s -> segments.add(s));
 
     PrintFacade.printSegments(segments,segmentsProcessor);
     segmentsProcessor.setSegmentColors(segments);
     segmentsProcessor.pickWorstSegments(segments);
+    segmentsProcessor.pickBestSegments(segments);
 
     //map
     MapService.exportSegmentsWithPolylinesToLeafletJS(segments);

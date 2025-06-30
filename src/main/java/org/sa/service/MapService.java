@@ -45,7 +45,8 @@ public class MapService {
   private static void writeSegment(SegmentDTO segment, PrintWriter writer) {
 
     List<Double> p = segment.startLatitudeLongitude;
-    String label = segment.name.replace("\"", "\\\"");
+    String label = "<a href=\\\"" + segment.link + "\\\" target=\\\"_blank\\\">" + segment.name.replace("\"", "\\\\\"") + "</a>";
+
 
     if (segment.isKing)
       writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "], {icon: L.divIcon({className: 'crown-icon', html: '" + CROWN_EMOJI + "', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");

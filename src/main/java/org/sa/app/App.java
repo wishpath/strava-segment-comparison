@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class App {
+  private static final String STRAVA_SEGMENT_URI =  "https://www.strava.com/segments/";
   private static final StravaService stravaService = new StravaService();
   private static SegmentsProcessor segmentsProcessor = new SegmentsProcessor();
 
@@ -27,6 +28,7 @@ public class App {
       .peek(segment -> PolylineFacade.fetchPolyline(segment, id_polyline, segments, stravaService, segmentsProcessor))
       .peek(segment -> segment.score = segmentsProcessor.getPerformanceScore(segment))
       .peek(segment -> segment.isKing = segmentsProcessor.isKing(segment))
+      .peek(segment -> segment.link = STRAVA_SEGMENT_URI + segment.id)
       .forEach(segment -> segments.add(segment));
 
     PrintFacade.printSegments(segments,segmentsProcessor);

@@ -33,6 +33,7 @@ public class SegmentsProcessor {
       else {
         int colorValue = (int) ((double)(s.score - minScore) * times);
         s.webColor = hexColorUtil.hexColorFromRedThroughYellowToGreen(colorValue);
+        s.webColorDarker = hexColorUtil.hexColorFromRedThroughYellowToGreenDarker(colorValue);
       }
     }
   }

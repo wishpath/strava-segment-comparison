@@ -30,7 +30,7 @@ public class MapService {
       writer.println("</head><body>");
       writer.println("<div id='map' style='height: 100vh; width: 100vw;'></div>");
       writer.println("<script>");
-      writer.println("var map = L.map('map').setView([" + segments.get(0).startLatitudeLongitude.get(0) + "," + segments.get(0).startLatitudeLongitude.get(1) + "], 13);");
+      writer.println("var map = L.map('map').setView([" + segments.get(0).coordinate + "], 13);");
       writer.println("L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);");
 
       for (SegmentDTO s : segments) {
@@ -48,33 +48,33 @@ public class MapService {
   private static void writePolyline(SegmentDTO s, PrintWriter writer) {
     if (s.polyline != null && !s.polyline.isEmpty()) {
       String escapedPolyline = s.polyline.replace("\\", "\\\\");
+      String link = s.link.replace("\"", "\\\"");
+
       writer.println("var decoded = polyline.decode(\"" + escapedPolyline + "\");");
       writer.println("var latlngs = decoded.map(function(pair) { return [pair[0], pair[1]]; });");
-      writer.println("L.polyline(latlngs, {color: '" + s.webColor + "', weight: 4, opacity: 0.65}).addTo(map);");
+      // White edge polyline (bottom layer)
+      writer.println("var edgeLine = L.polyline(latlngs, {color: 'white', weight: 5, opacity: 0.5}).addTo(map);");
+      // Colored polyline (top layer)
+      writer.println("var colorLine = L.polyline(latlngs, {color: '" + s.webColor + "', weight: 4, opacity: 0.5}).addTo(map);");
+
+      // Hover effect: darker color & higher opacity
+      writer.println("colorLine.on('mouseover', function() { this.setStyle({color: '" + s.webColorDarker + "', opacity: 1}); });");
+      writer.println("colorLine.on('mouseout', function() { this.setStyle({color: '" + s.webColor + "', opacity: 0.5}); });");
+
+      // Click event to navigate to link
+      writer.println("colorLine.on('click', function() { window.open(\"" + link + "\", '_blank'); });");
     }
   }
-
-//  private static void writePin(SegmentDTO s, PrintWriter writer, String label) {
-//    List<Double> p = s.startLatitudeLongitude;
-//    if (s.isKing)
-//      writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "], {icon: L.divIcon({className: 'crown-icon', html: '" + CROWN_EMOJI + "', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
-//    else if (s.isWeakest)
-//      writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "], {icon: L.divIcon({className: 'crown-icon', html: '<div style=\"font-size: 20px;\">" + SKULL_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
-//    else if (s.isStrongest)
-//      writer.println("L.marker([" + p.get(0) + "," + p.get(1) + "], {icon: L.divIcon({className: 'crown-icon', html: '<div style=\"font-size: 11px;\">" + STRONG_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
-//    else
-//      writer.println("L.circleMarker([" + p.get(0) + "," + p.get(1) + "], {color: '" + s.webColor + "', fillColor: '" + s.webColor + "', opacity: 0.65, fillOpacity: 0.65, radius: 4.5}).addTo(map).bindPopup(\"" + label + "\");");
-//  }
 
   private static void writePin(SegmentDTO s, PrintWriter writer, String label) {
     if (s.isKing)
       writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'crown-icon', html: '" + CROWN_EMOJI + "', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
     else if (s.isWeakest)
-      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'crown-icon', html: '<div style=\"font-size: 20px;\">" + SKULL_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'scull-icon', html: '<div style=\"font-size: 20px;\">" + SKULL_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
     else if (s.isStrongest)
-      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'crown-icon', html: '<div style=\"font-size: 11px;\">" + STRONG_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'strong-icon', html: '<div style=\"font-size: 11px;\">" + STRONG_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
     else
-      writer.println("L.circleMarker([" + s.coordinate + "], {color: '" + s.webColor + "', fillColor: '" + s.webColor + "', opacity: 0.65, fillOpacity: 0.65, radius: 4.5}).addTo(map).bindPopup(\"" + label + "\");");
+      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'default-icon', html: '<div style=\"color: " + s.webColor + "; font-size: 14px; line-height: 14px;\">&#9679;</div>', iconSize: [14, 14], iconAnchor: [5, 7]})}).addTo(map).bindPopup(\"" + label + "\");");
   }
 
   private static String buildLabel(SegmentDTO s) {

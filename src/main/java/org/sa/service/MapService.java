@@ -52,14 +52,16 @@ public class MapService {
 
       writer.println("var decoded = polyline.decode(\"" + escapedPolyline + "\");");
       writer.println("var latlngs = decoded.map(function(pair) { return [pair[0], pair[1]]; });");
+
       // White edge polyline (bottom layer)
-      writer.println("var edgeLine = L.polyline(latlngs, {color: 'white', weight: 5, opacity: 0.5}).addTo(map);");
+      writer.println("var edgeLine = L.polyline(latlngs, {color: 'white', weight: 5, opacity: 1}).addTo(map);");
+
       // Colored polyline (top layer)
-      writer.println("var colorLine = L.polyline(latlngs, {color: '" + s.webColor + "', weight: 4, opacity: 0.5}).addTo(map);");
+      writer.println("var colorLine = L.polyline(latlngs, {color: '" + s.webColor + "', weight: 3, opacity: 1}).addTo(map);");
 
       // Hover effect: darker color & higher opacity
       writer.println("colorLine.on('mouseover', function() { this.setStyle({color: '" + s.webColorDarker + "', opacity: 1}); });");
-      writer.println("colorLine.on('mouseout', function() { this.setStyle({color: '" + s.webColor + "', opacity: 0.5}); });");
+      writer.println("colorLine.on('mouseout', function() { this.setStyle({color: '" + s.webColor + "', opacity: 1}); });");
 
       // Click event to navigate to link
       writer.println("colorLine.on('click', function() { window.open(\"" + link + "\", '_blank'); });");
@@ -74,7 +76,7 @@ public class MapService {
     else if (s.isStrongest)
       writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'strong-icon', html: '<div style=\"font-size: 11px;\">" + STRONG_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
     else
-      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'default-icon', html: '<div style=\"color: " + s.webColor + "; font-size: 14px; line-height: 14px;\">&#9679;</div>', iconSize: [14, 14], iconAnchor: [5, 7]})}).addTo(map).bindPopup(\"" + label + "\");");
+      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'default-icon', html: '<div style=\"color: " + s.webColor + "; font-size: 14px; line-height: 18px;\">&#9679;</div>', iconSize: [14, 14], iconAnchor: [5, 7]})}).addTo(map).bindPopup(\"" + label + "\");");
   }
 
   private static String buildLabel(SegmentDTO s) {

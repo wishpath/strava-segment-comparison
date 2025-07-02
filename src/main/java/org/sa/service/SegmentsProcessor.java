@@ -28,8 +28,14 @@ public class SegmentsProcessor {
     double times = 100 / (double) range;
 
     for (SegmentDTO s : segments) {
-      if (s.score == 0) s.webColor = "black";
-      else if (s.isKing) s.webColor = "blue";
+      if (s.score == 0) {
+        s.webColor = "dimgray";
+        s.webColorDarker = "black";
+      }
+      else if (s.isKing) {
+        s.webColor = "blue";
+        s.webColorDarker = "darkblue";
+      }
       else {
         int colorValue = (int) ((double)(s.score - minScore) * times);
         s.webColor = hexColorUtil.hexColorFromRedThroughYellowToGreen(colorValue);

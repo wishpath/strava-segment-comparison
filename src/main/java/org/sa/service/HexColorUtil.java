@@ -22,6 +22,6 @@ public class HexColorUtil {
 
   public String hexColorFromRedThroughYellowToGreenDarker(int value) {
     value = Math.max(0, Math.min(100, value));
-    return colors.get(value);
+    return colorsDarker.get(value);
   }
 }

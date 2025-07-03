@@ -1,1 +1,2 @@
 to_do:
+  - s.elevationHighMeters - s.elevationLowMeters; // simply use s.deltaAltitude;

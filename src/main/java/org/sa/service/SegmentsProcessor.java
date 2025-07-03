@@ -19,6 +19,13 @@ public class SegmentsProcessor {
     return (int) (100 * (elevationGain + 0.1 * flatDistance) / time);
   }
 
+  public int getPerformanceScore(SegmentDTO s, int time) {
+    if (time == 0) return 0;
+    double elevationGain = s.elevationHighMeters - s.elevationLowMeters;
+    double flatDistance = Math.max(0, s.distanceMeters - elevationGain);
+    return (int) (100 * (elevationGain + 0.1 * flatDistance) / time);
+  }
+
   public void setSegmentColors(List<SegmentDTO> segments) {
     int maxScore = getMaxScore(segments);
     int minScore = getMinScore(segments);

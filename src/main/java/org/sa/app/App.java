@@ -29,6 +29,8 @@ public class App {
       .peek(s -> s.score = segmentsProcessor.getPerformanceScore(s))
       .peek(s -> s.isKing = segmentsProcessor.isKing(s))
       //.peek(s -> s.allPeopleBestTimeSeconds = s.isKing? s.userPersonalRecordSeconds : stravaService.getFastestSegmentEffort(s.id))
+      .peek(s -> s.allPeopleBestTimeSeconds = s.isKing? s.userPersonalRecordSeconds : HtmlFetcher.fetchSegmentFastestTimeSeconds(s.id))
+      .peek(s -> s.allPeopleBestScore = s.isKing? s.score : segmentsProcessor.getPerformanceScore(s, s.allPeopleBestTimeSeconds))
       .peek(s -> s.link = STRAVA_SEGMENT_URI + s.id)
       .peek(s -> s.paceString = segmentsProcessor.calculatePace(s))
       .peek(s -> s.bestTimeString = segmentsProcessor.calculateBestTime(s))

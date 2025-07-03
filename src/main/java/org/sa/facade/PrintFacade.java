@@ -20,7 +20,7 @@ public class PrintFacade {
       System.out.println("     home proximity (m): " + CoordinateService.getDistanceFromHomeInMeters(s));
       System.out.println("     https://www.strava.com/segments/" + s.id);
       System.out.println("     score: " + RED + segmentsProcessor.getPerformanceScore(s) + RESET + (s.isKing ? "\uD83D\uDC51\uD83D\uDC51\uD83D\uDC51" : ""));
-      System.out.print(s.isKing ? "" : "     \uD83D\uDC51: " + s.allPeopleBestTimeSeconds + "\n");
+      System.out.print(s.isKing ? "" : "     \uD83D\uDC51: " + s.allPeopleBestScore + "\n");
       System.out.println();
     });
   }

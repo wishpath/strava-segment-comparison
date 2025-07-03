@@ -19,11 +19,17 @@ public class HtmlFetcher {
     }
   }
 
-  public static int fetchSegmentFastestTimeSeconds(Long segmentId) throws Exception {
-    String[] time = fetchSegmentFastestTimeString(segmentId).split(":");
-    return Integer.parseInt(time[0]) * 60 + Integer.parseInt(time[1]);
-  }
-  public static void main(String[] args) throws Exception {
-    System.out.println(fetchSegmentFastestTimeSeconds(39505949L));
+  public static int fetchSegmentFastestTimeSeconds(Long segmentId){
+    String timeString = "-1";
+    try {
+      timeString = fetchSegmentFastestTimeString(segmentId);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    System.out.println("time string: " + timeString);
+    String[] time = timeString.split(":");
+    if (time.length == 2)
+      return Integer.parseInt(time[0]) * 60 + Integer.parseInt(time[1]);
+    else return Integer.parseInt(time[0]);
   }
 }

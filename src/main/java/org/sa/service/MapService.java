@@ -34,8 +34,8 @@ public class MapService {
       writer.println("L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);");
 
       for (SegmentDTO s : segments) {
-        writePin(s, writer, buildLabel(s));
-        writePolyline(s, writer);
+        drawPin(s, writer, buildLabel(s));
+        drawPolyline(s, writer);
       }
 
       writer.println("</script></body></html>");
@@ -45,7 +45,7 @@ public class MapService {
     }
   }
 
-  private static void writePolyline(SegmentDTO s, PrintWriter writer) {
+  private static void drawPolyline(SegmentDTO s, PrintWriter writer) {
     if (s.polyline != null && !s.polyline.isEmpty()) {
       String escapedPolyline = s.polyline.replace("\\", "\\\\");
       String link = s.link.replace("\"", "\\\"");
@@ -54,7 +54,7 @@ public class MapService {
       writer.println("var latlngs = decoded.map(function(pair) { return [pair[0], pair[1]]; });");
 
       // White edge polyline (bottom layer)
-      writer.println("var edgeLine = L.polyline(latlngs, {color: 'white', weight: 5, opacity: 1}).addTo(map);");
+      writer.println("var edgeLine = L.polyline(latlngs, {color: 'black', weight: 4.5, opacity: 0.85}).addTo(map);");
 
       // Colored polyline (top layer)
       writer.println("var colorLine = L.polyline(latlngs, {color: '" + s.webColor + "', weight: 3, opacity: 1}).addTo(map);");
@@ -68,15 +68,17 @@ public class MapService {
     }
   }
 
-  private static void writePin(SegmentDTO s, PrintWriter writer, String label) {
+  private static void drawPin(SegmentDTO s, PrintWriter writer, String label) {
     if (s.isKing)
       writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'crown-icon', html: '" + CROWN_EMOJI + "', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
     else if (s.isWeakest)
       writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'scull-icon', html: '<div style=\"font-size: 20px;\">" + SKULL_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
     else if (s.isStrongest)
       writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'strong-icon', html: '<div style=\"font-size: 11px;\">" + STRONG_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
-    else
-      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'default-icon', html: '<div style=\"color: " + s.webColor + "; font-size: 14px; line-height: 18px;\">&#9679;</div>', iconSize: [14, 14], iconAnchor: [5, 7]})}).addTo(map).bindPopup(\"" + label + "\");");
+    else {
+      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'white-icon', html: '<div style=\"color: " + "black" + "; font-size: 20px; line-height: 18px;\">&#9679;</div>', iconSize: [14, 14], iconAnchor: [7, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'color-dot', html: '<div style=\"color: " + s.webColor + "; font-size: 14px; line-height: 18px;\">&#9679;</div>', iconSize: [14, 14], iconAnchor: [5, 7]})}).addTo(map).bindPopup(\"" + label + "\");");
+    }
   }
 
   private static String buildLabel(SegmentDTO s) {

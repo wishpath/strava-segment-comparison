@@ -28,6 +28,7 @@ public class App {
       .peek(s -> PolylineFacade.fetchPolyline(s, id_polyline, segments, stravaService, segmentsProcessor))
       .peek(s -> s.score = segmentsProcessor.getPerformanceScore(s))
       .peek(s -> s.isKing = segmentsProcessor.isKing(s))
+      //.peek(s -> s.allPeopleBestTimeSeconds = s.isKing? s.userPersonalRecordSeconds : stravaService.getFastestSegmentEffort(s.id))
       .peek(s -> s.link = STRAVA_SEGMENT_URI + s.id)
       .peek(s -> s.paceString = segmentsProcessor.calculatePace(s))
       .peek(s -> s.bestTimeString = segmentsProcessor.calculateBestTime(s))
@@ -35,7 +36,7 @@ public class App {
       .peek(s -> s.coordinate = s.startLatitudeLongitude.get(0) + "," + s.startLatitudeLongitude.get(1))
       .forEach(s -> segments.add(s));
 
-    PrintFacade.printSegments(segments,segmentsProcessor);
+    PrintFacade.printSegments(segments, segmentsProcessor);
     segmentsProcessor.setSegmentColors(segments);
     segmentsProcessor.pickWorstSegments(segments);
     segmentsProcessor.pickBestSegments(segments);

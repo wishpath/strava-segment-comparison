@@ -112,4 +112,22 @@ public class StravaService {
     JSONObject obj = new JSONObject(json);
     return obj.getJSONObject("map").getString("polyline");
   }
+
+  public int getFastestSegmentEffort(long segmentId) {
+    try {
+      URL url = new URL("https://www.strava.com/api/v3/segments/" + segmentId + "/leaderboard?per_page=1");
+      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+      conn.setRequestMethod("GET");
+      conn.setRequestProperty("Authorization", "Bearer " + getAccessToken());
+
+      try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+        String response = reader.lines().collect(Collectors.joining());
+        JsonNode json = new ObjectMapper().readTree(response);
+        JsonNode entry = json.withArray("entries").elements().hasNext() ? json.withArray("entries").elements().next() : null;
+        return entry == null ? -1 : entry.get("elapsed_time").asInt();
+      }
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to fetch segment leaderboard: " + e.getMessage(), e);
+    }
+  }
 }

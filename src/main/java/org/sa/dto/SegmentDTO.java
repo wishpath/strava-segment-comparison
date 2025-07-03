@@ -38,4 +38,5 @@ public class SegmentDTO {
   public String bestTimeString;
   public double deltaAltitude;
   public String coordinate; //e.g, San Francisco: "37.7749,-122.4194"
+  public int allPeopleBestTimeSeconds;
 }

@@ -5,22 +5,41 @@ import java.util.List;
 public class GradeAdjustmentModel {
 
   private static final List<GradientFactor> ADJUSTMENT_TABLE = List.of(
+//      new GradientFactor(-25, 1.00),
+//      new GradientFactor(-18, 1.00),
+//      new GradientFactor(-15, 0.94),
+//      new GradientFactor(-12, 0.91),
+//      new GradientFactor(-9,  0.88),
+//      new GradientFactor(-6,  0.90),
+//      new GradientFactor(-3,  0.96),
+//      new GradientFactor(0,   1.00),
+//      new GradientFactor(3,   0.97),
+//      new GradientFactor(6,   0.93),
+//      new GradientFactor(9,   0.87),
+//      new GradientFactor(12,  0.83),
+//      new GradientFactor(15,  0.79),
+//      new GradientFactor(18,  0.76),
+//      new GradientFactor(21,  0.74),
+//      new GradientFactor(25,  0.72)
+
+      //more significance on uphill effort
       new GradientFactor(-25, 1.00),
       new GradientFactor(-18, 1.00),
-      new GradientFactor(-15, 0.94),
-      new GradientFactor(-12, 0.91),
-      new GradientFactor(-9,  0.88),
-      new GradientFactor(-6,  0.90),
-      new GradientFactor(-3,  0.96),
+      new GradientFactor(-15, 0.96),
+      new GradientFactor(-12, 0.94),
+      new GradientFactor(-9,  0.92),
+      new GradientFactor(-6,  0.95),
+      new GradientFactor(-3,  0.98),
       new GradientFactor(0,   1.00),
-      new GradientFactor(3,   0.97),
-      new GradientFactor(6,   0.93),
-      new GradientFactor(9,   0.87),
-      new GradientFactor(12,  0.83),
-      new GradientFactor(15,  0.79),
-      new GradientFactor(18,  0.76),
-      new GradientFactor(21,  0.74),
-      new GradientFactor(25,  0.72)
+      new GradientFactor(3,   0.95),
+      new GradientFactor(6,   0.88),
+      new GradientFactor(9,   0.80),
+      new GradientFactor(12,  0.72),
+      new GradientFactor(15,  0.66),
+      new GradientFactor(18,  0.60),
+      new GradientFactor(21,  0.55),
+      new GradientFactor(25,  0.50)
+
   );
 
 

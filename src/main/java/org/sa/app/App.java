@@ -5,6 +5,7 @@ import org.sa.facade.PolylineFacade;
 import org.sa.facade.PrintFacade;
 import org.sa.service.*;
 import org.sa.service.score.Score;
+import org.sa.facade.CourseRecordFacade;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class App {
   private static final String STRAVA_SEGMENT_URI =  "https://www.strava.com/segments/";
   private static final StravaService stravaService = new StravaService();
   private static SegmentsProcessor segmentsProcessor = new SegmentsProcessor();
+  private static CourseRecordFacade courseRecordFacade = new CourseRecordFacade();
 
   public static void main(String[] args) throws IOException {
     List<SegmentDTO> segments = new ArrayList<>();
@@ -32,9 +34,9 @@ public class App {
       //.peek(s -> s.score = Score.getPerformanceScore(s))
       .peek(s -> s.score = Score.getScore(s))
       .sorted(Comparator.comparingInt(s -> s.score))
-      .peek(s -> PolylineFacade.fetchPolyline(s, id_polyline, segments, stravaService, segmentsProcessor))
+      .peek(s -> PolylineFacade.fetchPolyline(s, id_polyline, stravaService))
       .peek(s -> s.isKing = segmentsProcessor.isKing(s))
-      .peek(s -> s.allPeopleBestTimeSeconds = s.isKing? s.userPersonalRecordSeconds : HtmlFetcher.fetchSegmentFastestTimeSeconds(s.id))
+      .peek(s -> s.allPeopleBestTimeSeconds = courseRecordFacade.getAllPeopleBestTimeSeconds(s))
       //.peek(s -> s.allPeopleBestScore = s.isKing? s.score : Score.getPerformanceScore(s, s.allPeopleBestTimeSeconds))
       .peek(s -> s.allPeopleBestScore = s.isKing? s.score : Score.getScore(s, s.allPeopleBestTimeSeconds))
       .peek(s -> s.link = STRAVA_SEGMENT_URI + s.id)
@@ -52,9 +54,8 @@ public class App {
     MapService.exportSegmentsWithPolylinesToLeafletJS(segments);
     MapService.openMap("map_with_polylines.html");
 
-    //store polyline
-    StorageUtil.saveSegmentsToFile(id_polyline, "polylines.properties");
+    //store polylines and course records
+    StorageUtil.savePolylinesToFile(id_polyline, "polylines.properties");
+    courseRecordFacade.overwriteCourseRecordsBeforeAppTerminates();
   }
-
-
 }

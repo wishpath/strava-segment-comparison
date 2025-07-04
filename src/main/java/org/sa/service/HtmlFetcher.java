@@ -26,7 +26,7 @@ public class HtmlFetcher {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    System.out.println("time string: " + timeString);
+    System.out.println("time string: " + timeString + "\n");
     String[] time = timeString.split(":");
     if (time.length == 2)
       return Integer.parseInt(time[0]) * 60 + Integer.parseInt(time[1]);

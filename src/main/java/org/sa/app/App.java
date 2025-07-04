@@ -6,7 +6,10 @@ import org.sa.facade.PrintFacade;
 import org.sa.service.*;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 public class App {
   private static final String STRAVA_SEGMENT_URI =  "https://www.strava.com/segments/";
@@ -24,9 +27,11 @@ public class App {
       .filter(s -> s.activityType.equals("Run"))
       .filter(s -> s.averageGradePercent > 1)
       .sorted(Comparator.comparingInt(CoordinateService::getDistanceFromHomeInMeters))
-      .sorted(Comparator.comparingInt(segmentsProcessor::getPerformanceScore))
-      .peek(s -> PolylineFacade.fetchPolyline(s, id_polyline, segments, stravaService, segmentsProcessor))
       .peek(s -> s.score = segmentsProcessor.getPerformanceScore(s))
+      //.peek(s -> s.score = Score.getScore(s))
+      //.sorted(Comparator.comparingInt(segmentsProcessor::getPerformanceScore))
+      .sorted(Comparator.comparingInt(s -> s.score))
+      .peek(s -> PolylineFacade.fetchPolyline(s, id_polyline, segments, stravaService, segmentsProcessor))
       .peek(s -> s.isKing = segmentsProcessor.isKing(s))
       //.peek(s -> s.allPeopleBestTimeSeconds = s.isKing? s.userPersonalRecordSeconds : stravaService.getFastestSegmentEffort(s.id))
       .peek(s -> s.allPeopleBestTimeSeconds = s.isKing? s.userPersonalRecordSeconds : HtmlFetcher.fetchSegmentFastestTimeSeconds(s.id))

@@ -16,15 +16,25 @@ public class SegmentsProcessor {
 
     double elevationGain = s.elevationHighMeters - s.elevationLowMeters;
     double flatDistance = Math.max(0, s.distanceMeters - elevationGain);
-    return (int) (100 * (elevationGain + 0.1 * flatDistance) / time);
+    return (int) (200 * (elevationGain + 0.1 * flatDistance) / time);
   }
 
   public int getPerformanceScore(SegmentDTO s, int time) {
     if (time == 0) return 0;
     double elevationGain = s.elevationHighMeters - s.elevationLowMeters;
     double flatDistance = Math.max(0, s.distanceMeters - elevationGain);
-    return (int) (100 * (elevationGain + 0.1 * flatDistance) / time);
+    return (int) (200 * (elevationGain + 0.1 * flatDistance) / time);
   }
+//  public int getPerformanceScore(SegmentDTO s) {
+//    if (s.userPersonalRecordSeconds == null) return 0;
+//    return getPerformanceScore(s, s.userPersonalRecordSeconds);
+//  }
+//
+//  public int getPerformanceScore(SegmentDTO s, int time) {
+//    if (time == 0) return 0;
+//    double flatDistance = Math.max(0, s.distanceMeters - s.deltaAltitude);
+//    return (int) (100 * (s.deltaAltitude + 0.1 * flatDistance) / time);
+//  }
 
   public void setSegmentColors(List<SegmentDTO> segments) {
     int maxScore = getMaxScore(segments);

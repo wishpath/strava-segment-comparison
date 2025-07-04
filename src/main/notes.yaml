@@ -1,2 +1,3 @@
 to_do:
+  - save best all people score each week, so no fetching needed
   - s.elevationHighMeters - s.elevationLowMeters; // simply use s.deltaAltitude;

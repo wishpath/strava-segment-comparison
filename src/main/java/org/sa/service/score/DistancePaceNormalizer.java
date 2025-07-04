@@ -1,10 +1,10 @@
-package org.sa.service.normalizers;
+package org.sa.service.score;
 
 import java.util.List;
 
 record DistancePace(double distanceMeters, double referencePacePerKm) {}
 
-public class DistanceEffortNormalizer {
+public class DistancePaceNormalizer {
 
   /**
    * Reference table of typical elite-level pace (min/km) for a range of distances.
@@ -12,7 +12,7 @@ public class DistanceEffortNormalizer {
    * represents the same level of athletic performance at its respective distance.
    */
   static final List<DistancePace> REFERENCE_PACES = List.of(
-      new DistancePace(50,    1.70),
+      new DistancePace(50,    1.70), // m    // t / m
       new DistancePace(100,   2.00),
       new DistancePace(300,   2.40),
       new DistancePace(400,   2.50),
@@ -33,7 +33,10 @@ public class DistanceEffortNormalizer {
       return REFERENCE_PACES.get(0).referencePacePerKm();
 
     for (int i = 1; i < REFERENCE_PACES.size(); i++) {
-      DistancePace lower = REFERENCE_PACES.get(i - 1), upper = REFERENCE_PACES.get(i);
+
+      DistancePace lower = REFERENCE_PACES.get(i - 1);
+      DistancePace upper = REFERENCE_PACES.get(i);
+
       if (meters <= upper.distanceMeters()) {
         double ratio = (meters - lower.distanceMeters()) / (upper.distanceMeters() - lower.distanceMeters());
         return lower.referencePacePerKm() * (1 - ratio) + upper.referencePacePerKm() * ratio;
@@ -43,14 +46,6 @@ public class DistanceEffortNormalizer {
     return REFERENCE_PACES.getLast().referencePacePerKm();
   }
 
-  /**
-   * Normalizes a given pace (min/km) over `distanceMeters` to its equivalent at `targetMeters`.
-   * Keeps the relative effort the same, assuming the runner performs equally well across distances.
-   */
-  public static double normalizePace(double distanceMeters, double actualPacePerKm, double targetMeters) {
-    double relativeEffort = actualPacePerKm / referencePaceFor(distanceMeters);
-    return relativeEffort * referencePaceFor(targetMeters);
-  }
 
   /**
    * Takes a performance (time and distance) and normalizes it to 300 meters.
@@ -77,5 +72,15 @@ public class DistanceEffortNormalizer {
     double normalizedTo300 = normalizePaceFor300Meters(testTimeSec, testDistance);
     System.out.printf("Performance: %dm in %ds → normalized to %.2f min/km at 300m%n",
         testDistance, testTimeSec, normalizedTo300);
+  }
+
+
+  /**
+   * Normalizes a given pace (min/km) over `distanceMeters` to its equivalent at `targetMeters`.
+   * Keeps the relative effort the same, assuming the runner performs equally well across distances.
+   */
+  public static double normalizePace(double distanceMeters, double actualPacePerKm, double targetMeters) {
+    double relativeEffort = actualPacePerKm / referencePaceFor(distanceMeters);
+    return relativeEffort * referencePaceFor(targetMeters);
   }
 }

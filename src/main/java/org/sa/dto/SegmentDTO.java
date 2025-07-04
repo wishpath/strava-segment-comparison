@@ -27,9 +27,7 @@ public class SegmentDTO {
   @JsonProperty("athlete_pr_effort") public UserPersonalRecordDTO userPersonalRecordDTO;
   @JsonProperty("starred_date") public String starredDate; // date when segment was starred
   public String polyline; //Google Polyline is a lossy compressed format for encoding a series of lat/lng coordinates.
-  public int score;
-  public String webColor; // color for pin and polyline on the map
-  public String webColorDarker; // color for hovered polyline
+
   public boolean isWeakest = false; //lowest score (not incl KOM)
   public boolean isKing = false; // better than all other athletes
   public String link; // to Strava segment page
@@ -38,6 +36,14 @@ public class SegmentDTO {
   public String bestTimeString;
   public double deltaAltitude;
   public String coordinate; //e.g, San Francisco: "37.7749,-122.4194"
-  public int allPeopleBestTimeSeconds;
+
+  //color
+  public String webColor; // color for pin and polyline on the map
+  public String webColorDarker; // color for hovered polyline
+
+  //score
+  public int score;
   public int allPeopleBestScore;
+
+  public int allPeopleBestTimeSeconds;
 }

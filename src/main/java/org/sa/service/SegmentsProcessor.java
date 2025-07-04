@@ -8,18 +8,6 @@ import java.util.List;
 public class SegmentsProcessor {
   HexColorUtil hexColorUtil = new HexColorUtil(new WebColorGradientCalculator());
 
-  public int getPerformanceScore(SegmentDTO s) {
-    if (s.userPersonalRecordDTO == null) return 0;
-    return getPerformanceScore(s, s.userPersonalRecordDTO.elapsedTime);
-  }
-
-  public int getPerformanceScore(SegmentDTO s, int time) { // non s time in case of another athlete
-    if (time == 0) return 0;
-    if (s.deltaAltitude > s.nonFlatDistanceMeters) throw new IllegalArgumentException("IMPOSSIBLE DELTA ALTITUDE");
-    double flatDistance = Math.sqrt(s.nonFlatDistanceMeters * s.nonFlatDistanceMeters - s.deltaAltitude * s.deltaAltitude);
-    return (int) (100 * (s.deltaAltitude + 0.1 * flatDistance) / time);
-  }
-
   public void setSegmentColors(List<SegmentDTO> segments) {
     int maxScore = getMaxScore(segments);
     int minScore = getMinScore(segments);

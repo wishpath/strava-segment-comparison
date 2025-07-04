@@ -1,8 +1,8 @@
-package org.sa.service.normalizers;
+package org.sa.service.score;
 
 import java.util.List;
 
-public class GradeAdjustedPaceModel {
+public class GradeAdjustmentModel {
 
   private static final List<GradientFactor> ADJUSTMENT_TABLE = List.of(
       new GradientFactor(-25, 1.00),
@@ -25,7 +25,7 @@ public class GradeAdjustedPaceModel {
 
 
 
-  public static int calculateGradeAdjustedLength(int meters, double gradientPercent) {
+  public static int calculateGradeAdjustedFlatLength(int meters, double gradientPercent) {
     return (int) Math.round(meters / getGradeAdjustedFactor(gradientPercent));
   }
 

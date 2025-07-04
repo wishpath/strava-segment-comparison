@@ -4,6 +4,7 @@ import org.sa.dto.SegmentDTO;
 import org.sa.facade.PolylineFacade;
 import org.sa.facade.PrintFacade;
 import org.sa.service.*;
+import org.sa.service.score.Score;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,14 +29,14 @@ public class App {
       .filter(s -> s.averageGradePercent > 1)
       .peek(s -> s.deltaAltitude = s.elevationHighMeters - s.elevationLowMeters)
       .sorted(Comparator.comparingInt(CoordinateService::getDistanceFromHomeInMeters))
-      .peek(s -> s.score = segmentsProcessor.getPerformanceScore(s))
-      //.peek(s -> s.score = Score.getScore(s))
+      //.peek(s -> s.score = Score.getPerformanceScore(s))
+      .peek(s -> s.score = Score.getScore(s))
       .sorted(Comparator.comparingInt(s -> s.score))
       .peek(s -> PolylineFacade.fetchPolyline(s, id_polyline, segments, stravaService, segmentsProcessor))
       .peek(s -> s.isKing = segmentsProcessor.isKing(s))
-      //.peek(s -> s.allPeopleBestTimeSeconds = s.isKing? s.userPersonalRecordSeconds : stravaService.getFastestSegmentEffort(s.id))
       .peek(s -> s.allPeopleBestTimeSeconds = s.isKing? s.userPersonalRecordSeconds : HtmlFetcher.fetchSegmentFastestTimeSeconds(s.id))
-      .peek(s -> s.allPeopleBestScore = s.isKing? s.score : segmentsProcessor.getPerformanceScore(s, s.allPeopleBestTimeSeconds))
+      //.peek(s -> s.allPeopleBestScore = s.isKing? s.score : Score.getPerformanceScore(s, s.allPeopleBestTimeSeconds))
+      .peek(s -> s.allPeopleBestScore = s.isKing? s.score : Score.getScore(s, s.allPeopleBestTimeSeconds))
       .peek(s -> s.link = STRAVA_SEGMENT_URI + s.id)
       .peek(s -> s.paceString = segmentsProcessor.calculatePace(s))
       .peek(s -> s.bestTimeString = segmentsProcessor.calculateBestTime(s))

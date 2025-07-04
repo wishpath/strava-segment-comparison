@@ -12,7 +12,7 @@ public class DistancePaceNormalizer {
    * represents the same level of athletic performance at its respective distance.
    */
   static final List<DistancePace> REFERENCE_PACES = List.of(
-      new DistancePace(50,    1.70), // m    // t / m
+      new DistancePace(50,    1.70), // m    // s / m
       new DistancePace(100,   2.00),
       new DistancePace(300,   2.40),
       new DistancePace(400,   2.50),

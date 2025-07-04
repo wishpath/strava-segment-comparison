@@ -10,31 +10,15 @@ public class SegmentsProcessor {
 
   public int getPerformanceScore(SegmentDTO s) {
     if (s.userPersonalRecordDTO == null) return 0;
-
-    int time = s.userPersonalRecordDTO.elapsedTime;
-    if (time == 0) return 0;
-
-    double elevationGain = s.elevationHighMeters - s.elevationLowMeters;
-    double flatDistance = Math.max(0, s.distanceMeters - elevationGain);
-    return (int) (200 * (elevationGain + 0.1 * flatDistance) / time);
+    return getPerformanceScore(s, s.userPersonalRecordDTO.elapsedTime);
   }
 
-  public int getPerformanceScore(SegmentDTO s, int time) {
+  public int getPerformanceScore(SegmentDTO s, int time) { // non s time in case of another athlete
     if (time == 0) return 0;
-    double elevationGain = s.elevationHighMeters - s.elevationLowMeters;
-    double flatDistance = Math.max(0, s.distanceMeters - elevationGain);
-    return (int) (200 * (elevationGain + 0.1 * flatDistance) / time);
+    if (s.deltaAltitude > s.nonFlatDistanceMeters) throw new IllegalArgumentException("IMPOSSIBLE DELTA ALTITUDE");
+    double flatDistance = Math.sqrt(s.nonFlatDistanceMeters * s.nonFlatDistanceMeters - s.deltaAltitude * s.deltaAltitude);
+    return (int) (100 * (s.deltaAltitude + 0.1 * flatDistance) / time);
   }
-//  public int getPerformanceScore(SegmentDTO s) {
-//    if (s.userPersonalRecordSeconds == null) return 0;
-//    return getPerformanceScore(s, s.userPersonalRecordSeconds);
-//  }
-//
-//  public int getPerformanceScore(SegmentDTO s, int time) {
-//    if (time == 0) return 0;
-//    double flatDistance = Math.max(0, s.distanceMeters - s.deltaAltitude);
-//    return (int) (100 * (s.deltaAltitude + 0.1 * flatDistance) / time);
-//  }
 
   public void setSegmentColors(List<SegmentDTO> segments) {
     int maxScore = getMaxScore(segments);
@@ -114,8 +98,8 @@ public class SegmentsProcessor {
    * Calculates pace as minutes and seconds per kilometer, e.g. "4m:30s /km".
    */
   public String calculatePace(SegmentDTO s) {
-    if (s.userPersonalRecordSeconds == null || s.distanceMeters <= 0) return "-1";
-    int totalSeconds = (int) Math.round(s.userPersonalRecordSeconds / (s.distanceMeters / 1000.0));
+    if (s.userPersonalRecordSeconds == null || s.nonFlatDistanceMeters <= 0) return "-1";
+    int totalSeconds = (int) Math.round(s.userPersonalRecordSeconds / (s.nonFlatDistanceMeters / 1000.0));
     int min = totalSeconds / 60, sec = totalSeconds % 60;
     return min + "m:" + (sec < 10 ? "0" : "") + sec + "s /km";
   }

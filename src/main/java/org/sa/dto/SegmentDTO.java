@@ -9,7 +9,7 @@ public class SegmentDTO {
   @JsonProperty("resource_state") public int resourceState; // indicates how much detail is available: 1 = only ID (meta), 2 = basic info (summary), 3 = full detail; useful to know whether other fields are reliably populated
   @JsonProperty("name") public String name;
   @JsonProperty("activity_type") public String activityType; // (e.g., Ride, Run)
-  @JsonProperty("distance") public double distanceMeters;
+  @JsonProperty("distance") public double nonFlatDistanceMeters;
   @JsonProperty("average_grade") public double averageGradePercent;
   @JsonProperty("maximum_grade") public double maximumGradePercent; // maybe for about 25-50 meter subsegment
   @JsonProperty("elevation_high") public double elevationHighMeters;

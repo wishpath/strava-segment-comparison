@@ -85,7 +85,7 @@ public class MapService {
     String score = "<span style='color:red'>" + s.score + "</span> / " + s.allPeopleBestScore;
     String pace = (s.paceString != null && !s.paceString.isEmpty()) ? s.paceString : "N/A";
     String bestTime = (s.bestTimeString != null && !s.bestTimeString.isEmpty()) ? s.bestTimeString : "N/A";
-    String distanceM = String.format("%.0f m", s.distanceMeters);
+    String distanceM = String.format("%.0f m", s.nonFlatDistanceMeters);
     String grade = String.format("%.1f%%", s.averageGradePercent);
     String deltaAlt = String.format("▲ %.0f m", s.deltaAltitude);
 

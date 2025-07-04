@@ -5,7 +5,7 @@ import org.sa.dto.SegmentDTO;
 public class Score {
   public static int getScore(SegmentDTO s) {
     if (s.userPersonalRecordSeconds == null) return 0;
-    return getScore((int)s.distanceMeters, s.averageGradePercent, s.userPersonalRecordSeconds);
+    return getScore((int)s.nonFlatDistanceMeters, s.averageGradePercent, s.userPersonalRecordSeconds);
   }
 
   public static int getScore(int distanceMeters, double averageGradient, int durationSeconds) {

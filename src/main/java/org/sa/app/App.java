@@ -26,10 +26,10 @@ public class App {
       .filter(s -> CoordinateService.isCloseToHome(s))
       .filter(s -> s.activityType.equals("Run"))
       .filter(s -> s.averageGradePercent > 1)
+      .peek(s -> s.deltaAltitude = s.elevationHighMeters - s.elevationLowMeters)
       .sorted(Comparator.comparingInt(CoordinateService::getDistanceFromHomeInMeters))
       .peek(s -> s.score = segmentsProcessor.getPerformanceScore(s))
       //.peek(s -> s.score = Score.getScore(s))
-      //.sorted(Comparator.comparingInt(segmentsProcessor::getPerformanceScore))
       .sorted(Comparator.comparingInt(s -> s.score))
       .peek(s -> PolylineFacade.fetchPolyline(s, id_polyline, segments, stravaService, segmentsProcessor))
       .peek(s -> s.isKing = segmentsProcessor.isKing(s))
@@ -39,7 +39,6 @@ public class App {
       .peek(s -> s.link = STRAVA_SEGMENT_URI + s.id)
       .peek(s -> s.paceString = segmentsProcessor.calculatePace(s))
       .peek(s -> s.bestTimeString = segmentsProcessor.calculateBestTime(s))
-      .peek(s -> s.deltaAltitude = s.elevationHighMeters - s.elevationLowMeters)
       .peek(s -> s.coordinate = s.startLatitudeLongitude.get(0) + "," + s.startLatitudeLongitude.get(1))
       .forEach(s -> segments.add(s));
 

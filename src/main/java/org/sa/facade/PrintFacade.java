@@ -13,7 +13,7 @@ public class PrintFacade {
   public static void printSegments(List<SegmentDTO> segments, SegmentsProcessor segmentsProcessor) {
     segments.forEach(s -> {
       System.out.println(s.name);
-      System.out.println("     distance (m): " + (int)s.distanceMeters);
+      System.out.println("     distance (m): " + (int)s.nonFlatDistanceMeters);
       System.out.println("     avg grade (%): " + s.averageGradePercent);
       System.out.println("     delta altitude (m): " + s.deltaAltitude);
       System.out.println("     my best time (s): " + s.userPersonalRecordSeconds);

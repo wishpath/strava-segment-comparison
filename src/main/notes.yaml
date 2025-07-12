@@ -1,3 +1,4 @@
 to_do:
-  - save best all people score each week, so no fetching needed
-  - s.elevationHighMeters - s.elevationLowMeters; // simply use s.deltaAltitude;
+  - print id to label (last line)
+  - show on the map with pin (target) where the best other people score was lowest
+  - mark local legend on pin

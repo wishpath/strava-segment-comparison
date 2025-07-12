@@ -27,8 +27,8 @@ public class Score {
     return getScore(s, s.userPersonalRecordSeconds);
   }
 
-  public static int getScore(SegmentDTO s, int timeSeconds) {
-    if (s.userPersonalRecordSeconds == null) return 0;
+  public static int getScore(SegmentDTO s, Integer timeSeconds) {
+    if (timeSeconds == null) return 0;
     int normalizedFlatDistanceMeters = GradeAdjustmentModel.calculateGradeAdjustedFlatLength((int) s.nonFlatDistanceMeters, s.averageGradePercent);
     double normalizedPaceMinPerKm = DistancePaceNormalizer.normalizePaceFor300Meters(timeSeconds, normalizedFlatDistanceMeters);
     return (int) (SCORE_FACTOR / normalizedPaceMinPerKm);

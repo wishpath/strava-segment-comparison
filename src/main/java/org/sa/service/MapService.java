@@ -10,8 +10,10 @@ import java.io.PrintWriter;
 public class MapService {
   private static final String DARKER_GRAY = "#505050";
   private static final String CROWN_EMOJI = "&#x1F451;"; //👑
-  private static final String SKULL_EMOJI = "&#x2620;"; //☠️
+  //private static final String SKULL_EMOJI = "&#x2620;"; //☠️
+  private static final String SKULL_EMOJI = "\uD83D\uDC80"; //💀
   private static final String STRONG_EMOJI = "&#x1F4AA;"; //💪
+  private static final String THUMBS_DOWN_EMOJI = "\uD83D\uDC4E"; // 👎
 
   public static void openMap(String filename) {
     try {
@@ -72,7 +74,7 @@ public class MapService {
     if (s.isKing)
       writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'crown-icon', html: '" + CROWN_EMOJI + "', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
     else if (s.isWeakest)
-      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'scull-icon', html: '<div style=\"font-size: 20px;\">" + SKULL_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [12, 12]})}).addTo(map).bindPopup(\"" + label + "\");");
+      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'scull-icon', html: '<div style=\"font-size: 12px;\">" + SKULL_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
     else if (s.isStrongest)
       writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'strong-icon', html: '<div style=\"font-size: 11px;\">" + STRONG_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
     else {

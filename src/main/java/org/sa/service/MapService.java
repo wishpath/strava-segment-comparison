@@ -97,6 +97,7 @@ public class MapService {
         "<br/>Best time: " + bestTime +
         "<br/>Length: " + distanceM +
         "<br/>Gradient: " + grade +
-        "<br/>Delta altitude: " + deltaAlt;
+        "<br/>Delta altitude: " + deltaAlt +
+        "<br/>id: " + s.id;
   }
 }

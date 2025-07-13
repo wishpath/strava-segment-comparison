@@ -37,7 +37,7 @@ public class CourseRecordFacade {
 
   public int getAllPeopleBestTimeSeconds(SegmentDTO s) {
     //check if we already have the record
-    if (s.isKing) return s.userPersonalRecordSeconds;
+    if (s.amKingOfMountain) return s.userPersonalRecordSeconds;
     if (courseRecords.containsKey(s.id))
       return courseRecords.get(s.id).bestTimeSeconds;
 

@@ -8,12 +8,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class MapService {
-  private static final String DARKER_GRAY = "#505050";
+
   private static final String CROWN_EMOJI = "&#x1F451;"; //👑
-  //private static final String SKULL_EMOJI = "&#x2620;"; //☠️
   private static final String SKULL_EMOJI = "\uD83D\uDC80"; //💀
   private static final String STRONG_EMOJI = "&#x1F4AA;"; //💪
-  private static final String THUMBS_DOWN_EMOJI = "\uD83D\uDC4E"; // 👎
+  private static final String TARGET_EMOJI = "&#x1F3AF;"; //🎯
+  private static final String HUNDRED_EMOJI = "&#x1F4AF;"; // 💯
+
 
   public static void openMap(String filename) {
     try {
@@ -32,7 +33,7 @@ public class MapService {
       writer.println("</head><body>");
       writer.println("<div id='map' style='height: 100vh; width: 100vw;'></div>");
       writer.println("<script>");
-      writer.println("var map = L.map('map').setView([" + segments.get(0).coordinate + "], 13);");
+      writer.println("var map = L.map('map').setView([" + segments.get(0).startCoordinatePair + "], 13);");
       writer.println("L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);");
 
       for (SegmentDTO s : segments) {
@@ -71,25 +72,30 @@ public class MapService {
   }
 
   private static void drawPin(SegmentDTO s, PrintWriter writer, String label) {
-    if (s.isKing)
-      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'crown-icon', html: '" + CROWN_EMOJI + "', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
-    else if (s.isWeakest)
-      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'scull-icon', html: '<div style=\"font-size: 12px;\">" + SKULL_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
-    else if (s.isStrongest)
-      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'strong-icon', html: '<div style=\"font-size: 11px;\">" + STRONG_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+    if (s.amKingOfMountain)
+      writer.println("L.marker([" + s.startCoordinatePair + "], {icon: L.divIcon({className: 'crown-icon', html: '" + CROWN_EMOJI + "', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+    else if (s.isMyLowestScore)
+      writer.println("L.marker([" + s.startCoordinatePair + "], {icon: L.divIcon({className: 'scull-icon', html: '<div style=\"font-size: 12px;\">" + SKULL_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+    else if (s.isMyStrongestSegmentAttempted)
+      writer.println("L.marker([" + s.startCoordinatePair + "], {icon: L.divIcon({className: 'strong-icon', html: '<div style=\"font-size: 11px;\">" + STRONG_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+    else if (s.isEasiestToGetKingOfMountain)
+      writer.println("L.marker([" + s.startCoordinatePair + "], {icon: L.divIcon({className: 'strong-icon', html: '<div style=\"font-size: 11px;\">" + TARGET_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+    else if (s.amLocalLegend)
+      writer.println("L.marker([" + s.startCoordinatePair + "], {icon: L.divIcon({className: 'strong-icon', html: '<div style=\"font-size: 11px;\">" + HUNDRED_EMOJI + "</div>', iconSize: [16, 16], iconAnchor: [8, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
     else {
-      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'white-icon', html: '<div style=\"color: " + "black" + "; font-size: 20px; line-height: 18px;\">&#9679;</div>', iconSize: [14, 14], iconAnchor: [7, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
-      writer.println("L.marker([" + s.coordinate + "], {icon: L.divIcon({className: 'color-dot', html: '<div style=\"color: " + s.webColor + "; font-size: 14px; line-height: 18px;\">&#9679;</div>', iconSize: [14, 14], iconAnchor: [5, 7]})}).addTo(map).bindPopup(\"" + label + "\");");
+      writer.println("L.marker([" + s.startCoordinatePair + "], {icon: L.divIcon({className: 'white-icon', html: '<div style=\"color: " + "black" + "; font-size: 20px; line-height: 18px;\">&#9679;</div>', iconSize: [14, 14], iconAnchor: [7, 8]})}).addTo(map).bindPopup(\"" + label + "\");");
+      writer.println("L.marker([" + s.startCoordinatePair + "], {icon: L.divIcon({className: 'color-dot', html: '<div style=\"color: " + s.webColor + "; font-size: 14px; line-height: 18px;\">&#9679;</div>', iconSize: [14, 14], iconAnchor: [5, 7]})}).addTo(map).bindPopup(\"" + label + "\");");
     }
   }
 
   private static String buildLabel(SegmentDTO s) {
-    String score = "<span style='color:red'>" + s.score + "</span> / " + s.allPeopleBestScore;
+    String score = "<span style='color:red'>" + s.myScore + "</span> / " + s.allPeopleBestScore;
     String pace = (s.paceString != null && !s.paceString.isEmpty()) ? s.paceString : "N/A";
     String bestTime = (s.bestTimeString != null && !s.bestTimeString.isEmpty()) ? s.bestTimeString : "N/A";
     String distanceM = String.format("%.0f m", s.nonFlatDistanceMeters);
     String grade = String.format("%.1f%%", s.averageGradePercent);
     String deltaAlt = String.format("▲ %.0f m", s.deltaAltitude);
+    String recentEffortCount = s.myRecentAttemptCount + "/" + s.localLegendRecentAttemptCount;
 
     return "<a href=\\\"" + s.link + "\\\" target=\\\"_blank\\\">" + s.name.replace("\"", "\\\\\"") + "</a>" +
         "<br/>Score: " + score +
@@ -98,6 +104,7 @@ public class MapService {
         "<br/>Length: " + distanceM +
         "<br/>Gradient: " + grade +
         "<br/>Delta altitude: " + deltaAlt +
-        "<br/>id: " + s.id;
+        "<br/>Effort count: " + recentEffortCount +
+        "<br/>Id: " + s.id;
   }
 }

@@ -1,11 +1,11 @@
 package org.sa.app;
 
 import org.sa.dto.SegmentDTO;
+import org.sa.facade.CourseRecordFacade;
 import org.sa.facade.PolylineFacade;
 import org.sa.facade.PrintFacade;
 import org.sa.service.*;
 import org.sa.service.score.Score;
-import org.sa.facade.CourseRecordFacade;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,23 +32,25 @@ public class App {
       .peek(s -> s.deltaAltitude = s.elevationHighMeters - s.elevationLowMeters)
       .sorted(Comparator.comparingInt(CoordinateService::getDistanceFromHomeInMeters))
       //.peek(s -> s.score = Score.getPerformanceScore(s))
-      .peek(s -> s.score = Score.getScore(s))
-      .sorted(Comparator.comparingInt(s -> s.score))
+      .peek(s -> s.myScore = Score.getScore(s))
+      .sorted(Comparator.comparingInt(s -> s.myScore))
       .peek(s -> PolylineFacade.fetchPolyline(s, id_polyline, stravaService))
-      .peek(s -> s.isKing = segmentsProcessor.isKing(s))
+      .peek(s -> s.amKingOfMountain = segmentsProcessor.isKing(s))
       .peek(s -> s.allPeopleBestTimeSeconds = courseRecordFacade.getAllPeopleBestTimeSeconds(s))
       //.peek(s -> s.allPeopleBestScore = s.isKing? s.score : Score.getPerformanceScore(s, s.allPeopleBestTimeSeconds))
-      .peek(s -> s.allPeopleBestScore = s.isKing? s.score : Score.getScore(s, s.allPeopleBestTimeSeconds))
+      .peek(s -> s.allPeopleBestScore = s.amKingOfMountain ? s.myScore : Score.getScore(s, s.allPeopleBestTimeSeconds))
       .peek(s -> s.link = STRAVA_SEGMENT_URI + s.id)
       .peek(s -> s.paceString = segmentsProcessor.calculatePace(s))
       .peek(s -> s.bestTimeString = segmentsProcessor.calculateBestTime(s))
-      .peek(s -> s.coordinate = s.startLatitudeLongitude.get(0) + "," + s.startLatitudeLongitude.get(1))
+      .peek(s -> s.startCoordinatePair = s.startLatitudeLongitude.get(0) + "," + s.startLatitudeLongitude.get(1))
       .forEach(s -> segments.add(s));
 
     PrintFacade.printSegments(segments, segmentsProcessor);
     segmentsProcessor.setSegmentColors(segments);
-    segmentsProcessor.pickWorstSegments(segments);
-    segmentsProcessor.pickBestSegments(segments);
+    segmentsProcessor.setIsMyWorstScore(segments);
+    segmentsProcessor.setIsMyBestScore(segments);
+    segmentsProcessor.setIsEasiestToGetKingOfMountain(segments);
+    segmentsProcessor.setLocalLegendStats(stravaService, segments); //slow
 
     //map
     MapService.exportSegmentsWithPolylinesToLeafletJS(segments);

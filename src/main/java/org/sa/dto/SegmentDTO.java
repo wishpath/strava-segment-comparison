@@ -26,24 +26,37 @@ public class SegmentDTO {
   @JsonProperty("pr_time") public Integer userPersonalRecordSeconds;
   @JsonProperty("athlete_pr_effort") public UserPersonalRecordDTO userPersonalRecordDTO;
   @JsonProperty("starred_date") public String starredDate; // date when segment was starred
-  public String polyline; //Google Polyline is a lossy compressed format for encoding a series of lat/lng coordinates.
 
-  public boolean isWeakest = false; //lowest score (not incl KOM)
-  public boolean isKing = false; // better than all other athletes
+  // about segment itself
+  public String polyline; //Google Polyline is a lossy-compressed format for encoding a series of lat/lng coordinates.
   public String link; // to Strava segment page
-  public boolean isStrongest = false; //highest score (not incl KOM)
+  public String startCoordinatePair; //e.g, San Francisco: "37.7749,-122.4194"
+  public double deltaAltitude;
+
+
+  //my attempt stats
   public String paceString;
   public String bestTimeString;
-  public double deltaAltitude;
-  public String coordinate; //e.g, San Francisco: "37.7749,-122.4194"
+
+
+  //my score and comparisons
+  public int myScore;
+  public boolean isMyLowestScore = false; //lowest score comparing my other segments (not including "King Of the Mountain" ones)
+  public boolean amKingOfMountain = false; // better than all other athletes
+  public boolean isMyStrongestSegmentAttempted = false; //best score comparing my other segments (not including "King Of the Mountain" ones)
+
+
+  //other people score
+  public int allPeopleBestScore;
+  public int allPeopleBestTimeSeconds;
+  public boolean isEasiestToGetKingOfMountain = false; // has lowest allPeopleBestScore comparing other segments (not including "King Of the Mountain" ones)
+
+  //local legend
+  public boolean amLocalLegend = false;
+  public int myRecentAttemptCount = 0;
+  public int localLegendRecentAttemptCount = 0;
 
   //color
   public String webColor; // color for pin and polyline on the map
   public String webColorDarker; // color for hovered polyline
-
-  //score
-  public int score;
-  public int allPeopleBestScore;
-
-  public int allPeopleBestTimeSeconds;
 }

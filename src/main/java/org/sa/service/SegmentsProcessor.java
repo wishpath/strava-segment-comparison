@@ -1,6 +1,8 @@
 package org.sa.service;
 
+import org.sa.config.Console;
 import org.sa.console.WebColorGradientCalculator;
+import org.sa.dto.LocalLegendInfoDTO;
 import org.sa.dto.SegmentDTO;
 
 import java.util.List;
@@ -17,16 +19,16 @@ public class SegmentsProcessor {
     double times = 100 / (double) range;
 
     for (SegmentDTO s : segments) {
-      if (s.score == 0) {
+      if (s.myScore == 0) {
         s.webColor = "dimgray";
         s.webColorDarker = "black";
       }
-      else if (s.isKing) {
+      else if (s.amKingOfMountain) {
         s.webColor = "blue";
         s.webColorDarker = "darkblue";
       }
       else {
-        int colorValue = (int) ((double)(s.score - minScore) * times);
+        int colorValue = (int) ((double)(s.myScore - minScore) * times);
         s.webColor = hexColorUtil.hexColorFromRedThroughYellowToGreen(colorValue);
         s.webColorDarker = hexColorUtil.hexColorFromRedThroughYellowToGreenDarker(colorValue);
       }
@@ -38,8 +40,8 @@ public class SegmentsProcessor {
 
     for (SegmentDTO s : segments)
       if (s.userPersonalRecordDTO != null)
-        if (!s.isKing)
-          minScore = Math.min(minScore, s.score);
+        if (!s.amKingOfMountain)
+          minScore = Math.min(minScore, s.myScore);
 
     return minScore;
   }
@@ -49,31 +51,31 @@ public class SegmentsProcessor {
 
     for (SegmentDTO s : segments)
       if (s.userPersonalRecordDTO != null)
-        if (!s.isKing)
-          maxScore = Math.max(maxScore, s.score);
+        if (!s.amKingOfMountain)
+          maxScore = Math.max(maxScore, s.myScore);
 
     return maxScore;
   }
 
-  public void pickWorstSegments(List<SegmentDTO> segments) {
+  public void setIsMyWorstScore(List<SegmentDTO> segments) {
     int minScore = getMinScore(segments);
 
     for (SegmentDTO s : segments) {
       if (s.userPersonalRecordDTO != null)
-        if (!s.isKing)
-          if (s.score == minScore)
-            s.isWeakest = true;
+        if (!s.amKingOfMountain)
+          if (s.myScore == minScore)
+            s.isMyLowestScore = true;
     }
   }
 
-  public void pickBestSegments(List<SegmentDTO> segments) {
+  public void setIsMyBestScore(List<SegmentDTO> segments) {
     int maxScore = getMaxScore(segments);
 
     for (SegmentDTO s : segments) {
       if (s.userPersonalRecordDTO != null)
-        if (!s.isKing)
-          if (s.score == maxScore)
-            s.isStrongest = true;
+        if (!s.amKingOfMountain)
+          if (s.myScore == maxScore)
+            s.isMyStrongestSegmentAttempted = true;
     }
   }
 
@@ -101,5 +103,36 @@ public class SegmentsProcessor {
     if (secs < 60) return "0m:" + (secs < 10 ? "0" : "") + secs + "s";
     int min = secs / 60, sec = secs % 60;
     return min + "m:" + (sec < 10 ? "0" : "") + sec + "s";
+  }
+
+  public void setIsEasiestToGetKingOfMountain(List<SegmentDTO> segments) {
+    int minAllPeopleScore = Integer.MAX_VALUE;
+
+    for (SegmentDTO s : segments)
+      if (!s.amKingOfMountain)
+        minAllPeopleScore = Math.min(minAllPeopleScore, s.allPeopleBestScore);
+
+    for (SegmentDTO s : segments)
+      if (s.allPeopleBestScore == minAllPeopleScore) {
+        s.isEasiestToGetKingOfMountain = true;
+        System.out.println("easiestKOM: " + s.name);
+      }
+  }
+
+  public void setLocalLegendStats(StravaService stravaService, List<SegmentDTO> segments) {
+    for (SegmentDTO s : segments) {
+      System.out.println(Console.RED + s.name + ":" + Console.RESET + s.link);
+      if (s.amKingOfMountain) continue;
+      if (s.isEasiestToGetKingOfMountain) continue;
+      LocalLegendInfoDTO ll = stravaService.getLocalLegendInfo(s.id);
+      if (ll == null) continue; // no tries in the last 90 days
+      s.localLegendRecentAttemptCount = ll.legendEffortCount;
+      if (ll.amLocalLegend) {
+        s.amLocalLegend = true;
+        s.myRecentAttemptCount = ll.legendEffortCount;
+        continue;
+      }
+      s.myRecentAttemptCount = (int) stravaService.getMyRecentEffortCount(s.id);
+    }
   }
 }

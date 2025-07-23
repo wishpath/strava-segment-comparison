@@ -36,7 +36,7 @@ public class App {
       .sorted(Comparator.comparingInt(s -> s.myScore))
       .peek(s -> PolylineFacade.fetchPolyline(s, id_polyline, stravaService))
       .peek(s -> s.amKingOfMountain = segmentsProcessor.isKing(s))
-      .peek(s -> s.allPeopleBestTimeSeconds = courseRecordFacade.getAllPeopleBestTimeSeconds(s))
+      //.peek(s -> s.allPeopleBestTimeSeconds = courseRecordFacade.getAllPeopleBestTimeSeconds(s))
       //.peek(s -> s.allPeopleBestScore = s.isKing? s.score : Score.getPerformanceScore(s, s.allPeopleBestTimeSeconds))
       .peek(s -> s.allPeopleBestScore = s.amKingOfMountain ? s.myScore : Score.getScore(s, s.allPeopleBestTimeSeconds))
       .peek(s -> s.link = STRAVA_SEGMENT_URI + s.id)

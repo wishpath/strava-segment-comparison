@@ -120,6 +120,7 @@ public class SegmentsProcessor {
   }
 
   public void setLocalLegendStats(StravaService stravaService, List<SegmentDTO> segments) {
+    System.out.println();
     for (SegmentDTO s : segments) {
       System.out.println(Console.RED + s.name + ":" + Console.RESET + s.link);
       if (s.amKingOfMountain) continue;

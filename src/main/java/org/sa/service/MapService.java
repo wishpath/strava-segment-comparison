@@ -97,7 +97,9 @@ public class MapService {
     String deltaAlt = String.format("▲ %.0f m", s.deltaAltitude);
     String recentEffortCount = s.myRecentAttemptCount + "/" + s.localLegendRecentAttemptCount;
 
-    return "<a href=\\\"" + s.link + "\\\" target=\\\"_blank\\\">" + s.name.replace("\"", "\\\\\"") + "</a>" +
+    return s.myScore != 0 ?
+
+        "<a href=\\\"" + s.link + "\\\" target=\\\"_blank\\\">" + s.name.replace("\"", "\\\\\"") + "</a>" +
         "<br/>Score: " + score +
         "<br/>Pace: " + pace +
         "<br/>Best time: " + bestTime +
@@ -105,6 +107,15 @@ public class MapService {
         "<br/>Gradient: " + grade +
         "<br/>Delta altitude: " + deltaAlt +
         "<br/>Effort count: " + recentEffortCount +
+        "<br/>Id: " + s.id
+
+        :
+
+        "<a href=\\\"" + s.link + "\\\" target=\\\"_blank\\\">" + s.name.replace("\"", "\\\\\"") + "</a>" +
+        "<br/>Score: " + score +
+        "<br/>Length: " + distanceM +
+        "<br/>Gradient: " + grade +
+        "<br/>Delta altitude: " + deltaAlt +
         "<br/>Id: " + s.id;
   }
 }

@@ -43,7 +43,7 @@ public class CourseRecordFacade {
 
     //fetch and memorize
     System.out.print(s.name + ": fetching course record: ");
-    int fetchedTime = HtmlFetcher.fetchSegmentFastestTimeSeconds(s);
+    int fetchedTime = HtmlFetcher.fetchAllPeopleBestTimeSeconds(s);
     courseRecords.put(s.id, new CourseRecord(fetchedTime, LocalDateTime.now()));
     //doubles the record in the file, but ok since one is too old, and will be overwritten before app terminates
     appendLineToCSV(s.id, fetchedTime, LocalDateTime.now());

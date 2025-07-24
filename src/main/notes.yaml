@@ -12,3 +12,4 @@ to_do:
       - next to "my best time" -> "all people best time"
 ideas:
   - detail
+  - get all people best time through API not from DOM

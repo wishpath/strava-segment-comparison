@@ -1,5 +1,8 @@
 package org.sa.service;
 
+import org.sa.console.Colors;
+import org.sa.dto.SegmentDTO;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -7,15 +10,19 @@ import java.net.URL;
 import java.util.stream.Collectors;
 
 public class HtmlFetcher {
-  public static String fetchSegmentFastestTimeString(Long segmentId) throws Exception {
-    String dom = fetchSegmentPageDom(segmentId);
-    return dom.split("<td>1</td>")[1].split("</tr>")[0].split("\">")[1].split("<")[0];
+  public static String fetchSegmentFastestTimeString(SegmentDTO s) throws Exception {
+    String dom = fetchSegmentPageDom(s);
+    String bestTimeString = dom.split("<td>")[1].split("<abbr")[0];
+    System.out.println("FETCHED ALL PEOPLE BEST TIME FROM HTML (STRING): " + bestTimeString);
+    if (!bestTimeString.matches("[0-9]{1,2}:[0-9]{2}")) // examples that fit this regex: 9:45, 12:00
+        System.out.println(Colors.A4_ORANGE + " WRONG PATTERN OF TIME STRING" + Colors.RESET);
+    return bestTimeString;
   }
 
-  public static int fetchSegmentFastestTimeSeconds(Long segmentId){
+  public static int fetchSegmentFastestTimeSeconds(SegmentDTO s){
     String timeString = "-1";
     try {
-      timeString = fetchSegmentFastestTimeString(segmentId);
+      timeString = fetchSegmentFastestTimeString(s);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -26,8 +33,9 @@ public class HtmlFetcher {
     else return Integer.parseInt(time[0]);
   }
 
-  public static String fetchSegmentPageDom(Long segmentId) throws Exception {
-    URL url = new URL("https://www.strava.com/segments/" + segmentId);
+  public static String fetchSegmentPageDom(SegmentDTO s) throws Exception {
+    URL url = new URL("https://www.strava.com/segments/" + s.id);
+    System.out.print(s.name + ": " + "FETCHING SEGMENT PAGE DOM: " + url + ": ");
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     conn.setRequestMethod("GET");
     conn.setRequestProperty("User-Agent", "Mozilla/5.0");

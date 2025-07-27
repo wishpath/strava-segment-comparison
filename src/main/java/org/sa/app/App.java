@@ -35,8 +35,8 @@ public class App {
       .sorted(Comparator.comparingInt(s -> s.myScore))
       .peek(s -> PolylineFacade.fetchPolyline(s, id_polyline, stravaService))
       .peek(s -> s.amKingOfMountain = segmentsProcessor.isKing(s))
-      .peek(s -> s.allPeopleBestTimeSeconds = courseRecordFacade.getAllPeopleBestTimeSeconds(s))
-      .peek(s -> s.allPeopleBestScore = s.amKingOfMountain ? s.myScore : Score.getScore(s, s.allPeopleBestTimeSeconds))
+//      .peek(s -> s.allPeopleBestTimeSeconds = courseRecordFacade.getAllPeopleBestTimeSeconds(s))
+      //.peek(s -> s.allPeopleBestScore = s.amKingOfMountain ? s.myScore : Score.getScore(s, s.allPeopleBestTimeSeconds))
       .peek(s -> s.link = STRAVA_SEGMENT_URI + s.id)
       .peek(s -> s.paceString = segmentsProcessor.calculatePace(s))
       .peek(s -> s.bestTimeString = segmentsProcessor.calculateBestTime(s))
@@ -47,8 +47,9 @@ public class App {
     segmentsProcessor.setSegmentColors(segments);
     segmentsProcessor.setIsMyWorstScore(segments);
     segmentsProcessor.setIsMyBestScore(segments);
-    segmentsProcessor.setIsEasiestToGetKingOfMountain(segments);
     segmentsProcessor.setLocalLegendStats(stravaService, segments); //slow
+    segmentsProcessor.setAllPeopleBestTimesAndScores(segments, courseRecordFacade);
+    segmentsProcessor.setIsEasiestToGetKingOfMountain(segments);
 
     //map
     MapService.exportSegmentsWithPolylinesToLeafletJS(segments);

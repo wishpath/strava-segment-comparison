@@ -38,7 +38,7 @@ public class CourseRecordFacade {
   public int getAllPeopleBestTimeSeconds(SegmentDTO s) {
     //check if we already have the record
     if (s.amKingOfMountain) return s.userPersonalRecordSeconds;
-    if (courseRecords.containsKey(s.id))
+    if (courseRecords.containsKey(s.id)) // course record is stored in the file
       return courseRecords.get(s.id).bestTimeSeconds;
 
     //fetch and memorize

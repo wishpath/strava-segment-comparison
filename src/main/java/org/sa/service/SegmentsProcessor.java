@@ -4,6 +4,8 @@ import org.sa.config.Console;
 import org.sa.console.WebColorGradientCalculator;
 import org.sa.dto.LocalLegendInfoDTO;
 import org.sa.dto.SegmentDTO;
+import org.sa.facade.CourseRecordFacade;
+import org.sa.service.score.Score;
 
 import java.util.List;
 
@@ -134,6 +136,16 @@ public class SegmentsProcessor {
         continue;
       }
       s.myRecentAttemptCount = (int) stravaService.getMyRecentEffortCount(s.id);
+    }
+  }
+
+  public void setAllPeopleBestTimesAndScores(List<SegmentDTO> segments, CourseRecordFacade courseRecordFacade) {
+    for (SegmentDTO s : segments) {
+      System.out.println("COUNTING BEST ALL PEOPLE BEST TIMES AND SCORES: " + s.name);
+      s.allPeopleBestTimeSeconds = courseRecordFacade.getAllPeopleBestTimeSeconds(s);
+      System.out.println("      TIME: " + s.allPeopleBestTimeSeconds);
+      s.allPeopleBestScore = s.amKingOfMountain ? s.myScore : Score.getScore(s, s.allPeopleBestTimeSeconds);
+      System.out.println("      SCORE: " + s.allPeopleBestScore);
     }
   }
 }

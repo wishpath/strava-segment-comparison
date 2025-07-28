@@ -1,6 +1,5 @@
 package org.sa.service;
 
-import org.sa.config.Console;
 import org.sa.console.WebColorGradientCalculator;
 import org.sa.dto.LocalLegendInfoDTO;
 import org.sa.dto.SegmentDTO;
@@ -122,9 +121,8 @@ public class SegmentsProcessor {
   }
 
   public void setLocalLegendStats(StravaService stravaService, List<SegmentDTO> segments) {
-    System.out.println();
+    System.out.println("SET LOCAL LEGEND STATS");
     for (SegmentDTO s : segments) {
-      System.out.println(Console.RED + s.name + ":" + Console.RESET + s.link);
       if (s.amKingOfMountain) continue;
       if (s.isEasiestToGetKingOfMountain) continue;
       LocalLegendInfoDTO ll = stravaService.getLocalLegendInfo(s.id);
@@ -141,11 +139,8 @@ public class SegmentsProcessor {
 
   public void setAllPeopleBestTimesAndScores(List<SegmentDTO> segments, CourseRecordFacade courseRecordFacade) {
     for (SegmentDTO s : segments) {
-      System.out.println("COUNTING BEST ALL PEOPLE BEST TIMES AND SCORES: " + s.name);
       s.allPeopleBestTimeSeconds = courseRecordFacade.getAllPeopleBestTimeSeconds(s);
-      System.out.println("      TIME: " + s.allPeopleBestTimeSeconds);
       s.allPeopleBestScore = s.amKingOfMountain ? s.myScore : Score.getScore(s, s.allPeopleBestTimeSeconds);
-      System.out.println("      SCORE: " + s.allPeopleBestScore);
     }
   }
 }

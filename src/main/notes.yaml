@@ -1,4 +1,6 @@
 to_do:
+  - fix printing to console.
+  - put functionalities back to stream peek elements
   - score for very long segments should be fixed:
       - 100 should be amazing score
       - but for example of "Chocholow granica - Magura" (8667m):

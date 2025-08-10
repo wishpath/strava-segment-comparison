@@ -48,7 +48,7 @@ public class App {
     segmentsProcessor.setIsMyWorstScore(segments);
     segmentsProcessor.setIsMyBestScore(segments);
     segmentsProcessor.setLocalLegendStats(stravaService, segments); //slow
-    segmentsProcessor.setAllPeopleBestTimesAndScores(segments, courseRecordFacade);
+    segmentsProcessor.setAllPeopleBestTimesAndScores(segments, courseRecordFacade); //reads from html
     segmentsProcessor.setIsEasiestToGetKingOfMountain(segments);
 
     //map

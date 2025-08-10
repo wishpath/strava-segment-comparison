@@ -21,10 +21,8 @@ public class HtmlFetcher {
     }
 
     //extract best time string from DOM
-    System.out.println("<td class=\"last-child\">");
-    System.out.println(dom);
     String timeString = dom.split("<td class='last-child'>")[1].split("</td>")[0];
-    System.out.println("FETCHED ALL PEOPLE BEST TIME FROM HTML (STRING): " + timeString);
+    System.out.println("FETCHED ALL PEOPLE BEST TIME FROM HTML (STRING): " + Colors.RED + timeString + Colors.RESET);
     if (!timeString.matches("[0-9]{1,2}:[0-9]{2}")) // examples that fit this regex: 9:45, 12:00
       System.out.println(Colors.A4_ORANGE + " WRONG PATTERN OF TIME STRING" + Colors.RESET);
 
@@ -36,7 +34,6 @@ public class HtmlFetcher {
   }
 
   public static String fetchSegmentPageDom(SegmentDTO s) throws IOException {
-//    URL url = new URL("https://www.strava.com/segments/" + 39422974);
     URL url = new URL("https://www.strava.com/segments/" + s.id);
     System.out.print(s.name + ": " + "FETCHING SEGMENT PAGE DOM: " + url + ": ");
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();

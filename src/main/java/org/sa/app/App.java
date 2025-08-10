@@ -1,7 +1,7 @@
 package org.sa.app;
 
 import org.sa.dto.SegmentDTO;
-import org.sa.facade.CourseRecordFacade;
+import org.sa.facade.AllPeopleBestTimeSecondsFacade;
 import org.sa.facade.PolylineFacade;
 import org.sa.facade.PrintFacade;
 import org.sa.service.*;
@@ -17,7 +17,7 @@ public class App {
   private static final String STRAVA_SEGMENT_URI =  "https://www.strava.com/segments/";
   private static final StravaService stravaService = new StravaService();
   private static SegmentsProcessor segmentsProcessor = new SegmentsProcessor();
-  private static CourseRecordFacade courseRecordFacade = new CourseRecordFacade();
+  private static AllPeopleBestTimeSecondsFacade allPeopleBestTimeSecondsFacade = new AllPeopleBestTimeSecondsFacade();
 
   public static void main(String[] args) throws IOException {
     List<SegmentDTO> segments = new ArrayList<>();
@@ -48,7 +48,7 @@ public class App {
     segmentsProcessor.setIsMyWorstScore(segments);
     segmentsProcessor.setIsMyBestScore(segments);
     segmentsProcessor.setLocalLegendStats(stravaService, segments); //slow
-    segmentsProcessor.setAllPeopleBestTimesAndScores(segments, courseRecordFacade); //reads from html
+    segmentsProcessor.setAllPeopleBestTimesAndScores(segments, allPeopleBestTimeSecondsFacade); //reads from html
     segmentsProcessor.setIsEasiestToGetKingOfMountain(segments);
 
     //map
@@ -57,6 +57,6 @@ public class App {
 
     //store polylines and course records
     StorageUtil.savePolylinesToFile(id_polyline, "polylines.properties");
-    courseRecordFacade.overwriteCourseRecordsBeforeAppTerminates();
+    allPeopleBestTimeSecondsFacade.overwriteCourseRecordsBeforeAppTerminates();
   }
 }

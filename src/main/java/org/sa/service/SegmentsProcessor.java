@@ -3,7 +3,7 @@ package org.sa.service;
 import org.sa.console.WebColorGradientCalculator;
 import org.sa.dto.LocalLegendInfoDTO;
 import org.sa.dto.SegmentDTO;
-import org.sa.facade.CourseRecordFacade;
+import org.sa.facade.AllPeopleBestTimeSecondsFacade;
 import org.sa.service.score.Score;
 
 import java.util.List;
@@ -136,9 +136,9 @@ public class SegmentsProcessor {
     }
   }
 
-  public void setAllPeopleBestTimesAndScores(List<SegmentDTO> segments, CourseRecordFacade courseRecordFacade) {
+  public void setAllPeopleBestTimesAndScores(List<SegmentDTO> segments, AllPeopleBestTimeSecondsFacade allPeopleBestTimeSecondsFacade) {
     for (SegmentDTO s : segments) {
-      s.allPeopleBestTimeSeconds = courseRecordFacade.getAllPeopleBestTimeSeconds(s);
+      s.allPeopleBestTimeSeconds = allPeopleBestTimeSecondsFacade.getAllPeopleBestTimeSeconds(s);
       s.allPeopleBestScore = s.amKingOfMountain ? s.myScore : Score.getScore(s, s.allPeopleBestTimeSeconds);
     }
   }

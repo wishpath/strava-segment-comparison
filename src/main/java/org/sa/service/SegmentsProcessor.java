@@ -74,15 +74,23 @@ public class SegmentsProcessor {
     int maxScore = getMaxScore(segments);
 
     for (SegmentDTO s : segments) {
-      if (s.userPersonalRecordDTO != null)
+      if (s.userPersonalRecordDTO != null) //
         if (!s.amKingOfMountain)
-          if (s.myScore == maxScore)
+          if (s.myScore == maxScore) {
+            System.out.println(Console.TAB.repeat(3) + "my best score: " + s.name + " ; am king of mountain: " + s.amKingOfMountain);
             s.isMyStrongestSegmentAttempted = true;
+          }
+
     }
   }
 
-  public boolean isKing(SegmentDTO s) {
-    if (s.userPersonalRecordDTO == null) return false;
+  public boolean amKingOfMountain(SegmentDTO s) {
+    System.out.print(Console.TAB + Colors.MAGENTA + s.name + ": am king of mountain:");
+    if (s.userPersonalRecordDTO == null) {
+      System.out.println( "userPersonalRecordDTO is null" + Colors.RESET);
+      return false;
+    }
+    System.out.println( s.userPersonalRecordDTO.isKingOfMountain + Colors.RESET);
     return s.userPersonalRecordDTO.isKingOfMountain;
   }
 
@@ -122,9 +130,13 @@ public class SegmentsProcessor {
       }
   }
 
-  public void setAllPeopleBestTimesAndScores(List<SegmentDTO> segments, AllPeopleBestTimeSecondsFacade allPeopleBestTimeSecondsFacade) {
+  public void setAllPeopleBestTimesAndScores_andFixAmKOM(List<SegmentDTO> segments, AllPeopleBestTimeSecondsFacade allPeopleBestTimeSecondsFacade) {
     for (SegmentDTO s : segments) {
       s.allPeopleBestTimeSeconds = allPeopleBestTimeSecondsFacade.getAllPeopleBestTimeSeconds(s);
+      if (s.allPeopleBestTimeSeconds == s.userPersonalRecordSeconds && !s.amKingOfMountain) {
+        System.out.println("FIXING 'am king of mountain:" + s.name);
+        s.amKingOfMountain = true;
+      }
       s.allPeopleBestScore = s.amKingOfMountain ? s.myScore : Score.getScore(s, s.allPeopleBestTimeSeconds);
     }
   }

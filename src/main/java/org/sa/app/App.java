@@ -37,7 +37,7 @@ public class App {
       .peek(s -> s.myScore = Score.getScore(s))
       .sorted(Comparator.comparingInt(s -> s.myScore))
       .peek(s -> PolylineFacade.fetchPolyline(s, id_polyline, stravaService))
-      .peek(s -> s.amKingOfMountain = segmentsProcessor.isKing(s))
+      .peek(s -> s.amKingOfMountain = segmentsProcessor.amKingOfMountain(s))
       .peek(s -> s.link = STRAVA_SEGMENT_URI + s.id)
       .peek(s -> s.paceString = segmentsProcessor.calculatePace(s))
       .peek(s -> s.bestTimeString = segmentsProcessor.calculateBestTime(s))
@@ -45,23 +45,23 @@ public class App {
       .forEach(s -> segments.add(s));
     System.out.println("first block, ms: " + (System.currentTimeMillis() - start));
 
-    //second block
+    //all people best time stats
+    start = System.currentTimeMillis();
+    segmentsProcessor.setAllPeopleBestTimesAndScores_andFixAmKOM(segments, allPeopleBestTimeSecondsFacade);
+    System.out.println("all people best time stats, ms: " + (System.currentTimeMillis() - start));
+
+    //block B
     start = System.currentTimeMillis();
     segmentsProcessor.setSegmentColors(segments);
     segmentsProcessor.setIsMyWorstScore(segments);
     segmentsProcessor.setIsMyBestScore(segments);
-    System.out.println("second block, ms: " + (System.currentTimeMillis() - start));
+    System.out.println("block B, ms: " + (System.currentTimeMillis() - start));
 
     //local legend stats
     System.out.println("local legend: ");
     start = System.currentTimeMillis();
     localLegendService.setLocalLegendStats(stravaService, segments);
     System.out.println("local legend stats, ms: " + (System.currentTimeMillis() - start));
-
-    //all people best time stats
-    start = System.currentTimeMillis();
-    segmentsProcessor.setAllPeopleBestTimesAndScores(segments, allPeopleBestTimeSecondsFacade);
-    System.out.println("all people best time stats, ms: " + (System.currentTimeMillis() - start));
 
     //easiest to get KOM
     start = System.currentTimeMillis();

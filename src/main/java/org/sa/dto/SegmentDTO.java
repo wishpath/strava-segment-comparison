@@ -24,7 +24,7 @@ public class SegmentDTO {
   @JsonProperty("hazardous") public boolean hazardous;
   @JsonProperty("starred") public boolean starred;
   @JsonProperty("pr_time") public Integer userPersonalRecordSeconds;
-  @JsonProperty("athlete_pr_effort") public UserPersonalRecordDTO userPersonalRecordDTO;
+  @JsonProperty("athlete_pr_effort") public UserPersonalRecordDTO userPersonalRecordDTO; //if i have not tried this segmet this should be null... probably
   @JsonProperty("starred_date") public String starredDate; // date when segment was starred
 
   // about segment itself

@@ -11,6 +11,7 @@ public class PrintFacade {
   public static final String RED = "\u001B[31m";
 
   public static void printSegments(List<SegmentDTO> segments, SegmentsProcessor segmentsProcessor) {
+    System.out.println();
     segments.forEach(s -> {
       System.out.println(s.name);
       System.out.println("     distance (m): " + (int)s.nonFlatDistanceMeters);

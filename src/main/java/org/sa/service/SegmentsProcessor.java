@@ -1,7 +1,8 @@
 package org.sa.service;
 
+import org.sa.config.Console;
+import org.sa.console.Colors;
 import org.sa.console.WebColorGradientCalculator;
-import org.sa.dto.LocalLegendInfoDTO;
 import org.sa.dto.SegmentDTO;
 import org.sa.facade.AllPeopleBestTimeSecondsFacade;
 import org.sa.service.score.Score;
@@ -115,25 +116,10 @@ public class SegmentsProcessor {
 
     for (SegmentDTO s : segments)
       if (s.allPeopleBestScore == minAllPeopleScore) {
+        if (s.amKingOfMountain) continue;
         s.isEasiestToGetKingOfMountain = true;
-        System.out.println("easiestKOM: " + s.name);
+        System.out.println(Console.TAB + Colors.LIGHT_GRAY + "easiestKOM: " + s.name + Colors.RESET);
       }
-  }
-
-  public void setLocalLegendStats(StravaService stravaService, List<SegmentDTO> segments) {
-    for (SegmentDTO s : segments) {
-      if (s.amKingOfMountain) continue;
-      if (s.isEasiestToGetKingOfMountain) continue;
-      LocalLegendInfoDTO ll = stravaService.getLocalLegendInfo(s.id);
-      if (ll == null) continue; // no tries in the last 90 days
-      s.localLegendRecentAttemptCount = ll.legendEffortCount;
-      if (ll.amLocalLegend) {
-        s.amLocalLegend = true;
-        s.myRecentAttemptCount = ll.legendEffortCount;
-        continue;
-      }
-      s.myRecentAttemptCount = (int) stravaService.getMyRecentEffortCount(s.id);
-    }
   }
 
   public void setAllPeopleBestTimesAndScores(List<SegmentDTO> segments, AllPeopleBestTimeSecondsFacade allPeopleBestTimeSecondsFacade) {

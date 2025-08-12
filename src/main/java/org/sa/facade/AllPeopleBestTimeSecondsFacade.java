@@ -46,12 +46,12 @@ public class AllPeopleBestTimeSecondsFacade {
     segmentId_courseAllPeopleBestTimeRecord.put(s.id, new CourseRecord(fetchedTime, LocalDateTime.now()));
 
     //doubles the record in the file, but that is ok since first one is too old, and will be overwritten before app terminates
-    appendLineToCSV(s.id, fetchedTime, LocalDateTime.now());
+    appendAllPeopleBestTimeRecordToCSV(s.id, fetchedTime, LocalDateTime.now());
 
     return fetchedTime;
   }
 
-  private void appendLineToCSV(long segmentId, int bestTimeSeconds, LocalDateTime dateTime) {
+  private void appendAllPeopleBestTimeRecordToCSV(long segmentId, int bestTimeSeconds, LocalDateTime dateTime) {
     try {
       String line = segmentId + "," + bestTimeSeconds + "," + dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "\n";
       Files.writeString(COURSE_ALL_POPLE_BEST_TIME_SECONDS_CSV_FILEPATH, line, StandardOpenOption.CREATE, StandardOpenOption.APPEND);

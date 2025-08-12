@@ -3,7 +3,6 @@ package org.sa.app;
 import org.sa.dto.SegmentDTO;
 import org.sa.facade.AllPeopleBestTimeSecondsFacade;
 import org.sa.facade.PolylineFacade;
-import org.sa.facade.PrintFacade;
 import org.sa.service.*;
 import org.sa.service.score.Score;
 
@@ -67,9 +66,9 @@ public class App {
     //easiest to get KOM
     start = System.currentTimeMillis();
     segmentsProcessor.setIsEasiestToGetKingOfMountain(segments);
-    System.out.println("easiest to get KOM, ms: " + (System.currentTimeMillis() - start));
+    System.out.println("easiest to get KOM stats, ms: " + (System.currentTimeMillis() - start));
 
-    PrintFacade.printSegments(segments, segmentsProcessor);
+    //PrintFacade.printSegments(segments, segmentsProcessor);
     //map
     MapService.exportSegmentsWithPolylinesToLeafletJS(segments);
     MapService.openMap("map_with_polylines.html");

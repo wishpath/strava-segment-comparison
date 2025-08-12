@@ -48,36 +48,22 @@ public class LocalLegendService {
     for (SegmentDTO s : segments) {
       if (s.amKingOfMountain) continue;
       if (s.isEasiestToGetKingOfMountain) continue;
-      if (!segmentId_localLegendRecord.containsKey(s.id)) {
-        System.out.println(Console.TAB + Colors.LIGHT_GRAY + s.name + Colors.RESET);
+
+      LocalLegendRecord localLegendRecord = segmentId_localLegendRecord.get(s.id);
+      if (localLegendRecord == null) {
+        System.out.println(Console.TAB + "Parsing local legend stats: " + Colors.LIGHT_GRAY + s.name + Colors.RESET);
         LocalLegendInfoDTO ll = stravaService.getLocalLegendInfo(s.id);
         if (ll == null) continue; // no tries in the last 90 days
-        s.localLegendRecentAttemptCount = ll.legendEffortCount;
-        if (ll.amLocalLegend) {
-          s.amLocalLegend = true;
-          s.myRecentAttemptCount = ll.legendEffortCount;
-        }
-        else s.myRecentAttemptCount = (int) stravaService.getMyRecentEffortCount(s.id);
-        segmentId_localLegendRecord.put(s.id, new LocalLegendRecord(s.localLegendRecentAttemptCount, s.amLocalLegend, s.myRecentAttemptCount, LocalDateTime.now()));
-        //appendLocalLegendRecordToCsv(s);
+        int myRecentAttemptCount = ll.amLocalLegend ? ll.legendEffortCount : (int) stravaService.getMyRecentEffortCount(s.id);
+        localLegendRecord = new LocalLegendRecord(ll.legendEffortCount, ll.amLocalLegend, myRecentAttemptCount, LocalDateTime.now());
+        segmentId_localLegendRecord.put(s.id, localLegendRecord);
       }
+      s.localLegendRecentAttemptCount = localLegendRecord.localLegendRecentAttemptCount;
+      s.amLocalLegend = localLegendRecord.amLocalLegend;
+      s.myRecentAttemptCount = localLegendRecord.myRecentAttemptCount;
     }
     overwriteLocalLegendStorageBeforeAppTerminates();
   }
-
-//  private static void appendLocalLegendRecordToCsv(SegmentDTO s) {
-//    String id = s.id + "";
-//    String localLegendRecentAttemptCount = s.localLegendRecentAttemptCount + "";
-//    String amLocalLegend = s.amLocalLegend ? "I am LocalLegend" : "other athlete is LocalLegend";
-//    String myRecentAttemptCount = s.myRecentAttemptCount + "";
-//    String recordDate = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-//
-//    String csvLine = id + "," + localLegendRecentAttemptCount + "," + amLocalLegend + "," + myRecentAttemptCount + "," + recordDate + "\n";
-//
-//    try {
-//      Files.writeString(LOCAL_LEGEND_RECORDS_CSV_FILEPATH, csvLine, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-//    } catch (IOException ignored) {}
-//  }
 
   public void overwriteLocalLegendStorageBeforeAppTerminates() {
     //build content

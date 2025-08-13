@@ -89,33 +89,45 @@ public class MapService {
   }
 
   private static String buildLabel(SegmentDTO s) {
-    String score = "<span style='color:red'>" + s.myScore + "</span> / " + s.allPeopleBestScore;
-    String pace = (s.paceString != null && !s.paceString.isEmpty()) ? s.paceString : "N/A";
-    String bestTime = (s.bestTimeString != null && !s.bestTimeString.isEmpty()) ? s.bestTimeString : "N/A";
+
+
+    //unchangeable parameters of a segment
     String distanceM = String.format("%.0f m", s.nonFlatDistanceMeters);
-    String grade = String.format("%.1f%%", s.averageGradePercent);
     String deltaAlt = String.format("▲ %.0f m", s.deltaAltitude);
-    String recentEffortCount = s.myRecentAttemptCount + "/" + s.localLegendRecentAttemptCount;
+    String grade = String.format("%.1f%%", s.averageGradePercent);
 
-    return s.myScore != 0 ?
+    //people results
+    String scoreMineAndOverall = "<span style='color:red'>" + s.myScore + "</span> / " + s.allPeopleBestScore;
+    String myPace = (s.myPaceString != null && !s.myPaceString.isEmpty()) ? s.myPaceString : "N/A";
+    String overallPace = (s.allPeoplePaceString != null && !s.allPeoplePaceString.isEmpty()) ? s.allPeoplePaceString : "N/A";
+    String paceMineAndOverall = "<span style='color:red'>" + myPace + "</span> / " + overallPace;
 
+    String myBestTimeString = (s.myBestTimeString != null && !s.myBestTimeString.isEmpty()) ? s.myBestTimeString : "N/A";
+    String overallBestTimeString = (s.allPeopleBestTimeString != null && !s.allPeopleBestTimeString.isEmpty()) ? s.allPeopleBestTimeString : "N/A";
+    String bestTimeMineAndOverall = "<span style='color:red'>" + myBestTimeString + "</span> / " + overallBestTimeString;
+    String recentTriesMineAndOverall = "<span style='color:red'>" + s.myRecentAttemptCount + "</span> / " + s.localLegendRecentAttemptCount;
+
+    return
+
+        //unchangeable parameters of a segment
         "<a href=\\\"" + s.link + "\\\" target=\\\"_blank\\\">" + s.name.replace("\"", "\\\\\"") + "</a>" +
-        "<br/>Score: " + score +
-        "<br/>Pace: " + pace +
-        "<br/>Best time: " + bestTime +
+        "<br/>" +
         "<br/>Length: " + distanceM +
-        "<br/>Gradient: " + grade +
         "<br/>Delta altitude: " + deltaAlt +
-        "<br/>Effort count: " + recentEffortCount +
-        "<br/>Id: " + s.id
-
-        :
-
-        "<a href=\\\"" + s.link + "\\\" target=\\\"_blank\\\">" + s.name.replace("\"", "\\\\\"") + "</a>" +
-        "<br/>Score: " + score +
-        "<br/>Length: " + distanceM +
         "<br/>Gradient: " + grade +
-        "<br/>Delta altitude: " + deltaAlt +
+        "<br/>" +
+
+        //people results
+        "<br/>" + "<span style='color:red'>Mine</span>" + " / overall best:" +
+        "<br/>&nbsp;&nbsp;Score: " + scoreMineAndOverall +
+        "<br/>&nbsp;&nbsp;Pace, m:ss/km: " + paceMineAndOverall +
+        "<br/>&nbsp;&nbsp;Time, m:ss: " + bestTimeMineAndOverall +
+        "<br/>&nbsp;&nbsp;Tries: " + recentTriesMineAndOverall +
+        "<br/>" +
+
+        //developer stuff
         "<br/>Id: " + s.id;
+
+
   }
 }

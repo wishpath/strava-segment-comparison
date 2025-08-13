@@ -80,17 +80,11 @@ public class SegmentsProcessor {
             System.out.println(Console.TAB.repeat(3) + "my best score: " + s.name + " ; am king of mountain: " + s.amKingOfMountain);
             s.isMyStrongestSegmentAttempted = true;
           }
-
     }
   }
 
   public boolean amKingOfMountain(SegmentDTO s) {
-    System.out.print(Console.TAB + Colors.MAGENTA + s.name + ": am king of mountain:");
-    if (s.userPersonalRecordDTO == null) {
-      System.out.println( "userPersonalRecordDTO is null" + Colors.RESET);
-      return false;
-    }
-    System.out.println( s.userPersonalRecordDTO.isKingOfMountain + Colors.RESET);
+    if (s.userPersonalRecordDTO == null) return false;
     return s.userPersonalRecordDTO.isKingOfMountain;
   }
 
@@ -98,21 +92,28 @@ public class SegmentsProcessor {
    * Calculates pace as minutes and seconds per kilometer, e.g. "4m:30s /km".
    */
   public String calculatePace(SegmentDTO s) {
-    if (s.userPersonalRecordSeconds == null || s.nonFlatDistanceMeters <= 0) return "-1";
-    int totalSeconds = (int) Math.round(s.userPersonalRecordSeconds / (s.nonFlatDistanceMeters / 1000.0));
+    return calculatePaceFromSeconds(s.userPersonalRecordSeconds, s.nonFlatDistanceMeters);
+  }
+
+  public void formatAllPeoplePaceStrings(List<SegmentDTO> segments) {
+    for (SegmentDTO s : segments) {
+      s.allPeoplePaceString = calculatePaceFromSeconds(s.allPeopleBestTimeSeconds, s.nonFlatDistanceMeters);
+    }
+  }
+
+  private String calculatePaceFromSeconds(Integer totalTimeSeconds, double distanceMeters) {
+    if (totalTimeSeconds == null || distanceMeters <= 0) return "-1";
+    int totalSeconds = (int) Math.round(totalTimeSeconds / (distanceMeters / 1000.0));
     int min = totalSeconds / 60, sec = totalSeconds % 60;
-    return min + "m:" + (sec < 10 ? "0" : "") + sec + "s /km";
+    return min + ":" + (sec < 10 ? "0" : "") + sec;
   }
 
   /**
    * Formats best time as "Xm:YYs", e.g. "5m:00s" or "5m:07s".
    */
-  public String calculateBestTime(SegmentDTO s) {
+  public String formatBestTimeStringExplicit(SegmentDTO s) {
     if (s.userPersonalRecordSeconds == null || s.userPersonalRecordSeconds <= 0) return "-1";
-    int secs = s.userPersonalRecordSeconds;
-    if (secs < 60) return "0m:" + (secs < 10 ? "0" : "") + secs + "s";
-    int min = secs / 60, sec = secs % 60;
-    return min + "m:" + (sec < 10 ? "0" : "") + sec + "s";
+    return formatMinutesAndSecondsNoLetters(s.userPersonalRecordSeconds);
   }
 
   public void setIsEasiestToGetKingOfMountain(List<SegmentDTO> segments) {
@@ -134,10 +135,23 @@ public class SegmentsProcessor {
     for (SegmentDTO s : segments) {
       s.allPeopleBestTimeSeconds = allPeopleBestTimeSecondsFacade.getAllPeopleBestTimeSeconds(s);
       if (s.allPeopleBestTimeSeconds == s.userPersonalRecordSeconds && !s.amKingOfMountain) {
-        System.out.println("FIXING 'am king of mountain:" + s.name);
+        System.out.println(Console.TAB + Colors.RED + "FIXING 'am king of mountain:" + s.name + Colors.RESET);
         s.amKingOfMountain = true;
       }
       s.allPeopleBestScore = s.amKingOfMountain ? s.myScore : Score.getScore(s, s.allPeopleBestTimeSeconds);
     }
+  }
+
+  public void formatAllPeopleBestTimeStrings(List<SegmentDTO> segments) {
+    for (SegmentDTO s : segments) {
+      s.allPeopleBestTimeString = formatMinutesAndSecondsNoLetters(s.allPeopleBestTimeSeconds);
+    }
+  }
+
+  private String formatMinutesAndSecondsNoLetters(int seconds) {
+    if (seconds <= 0) return "-1";
+    if (seconds < 60) return "0:" + (seconds < 10 ? "0" : "") + seconds;
+    int minutes = seconds / 60, remainingSeconds = seconds % 60;
+    return minutes + ":" + (remainingSeconds < 10 ? "0" : "") + remainingSeconds;
   }
 }

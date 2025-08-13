@@ -39,8 +39,8 @@ public class App {
       .peek(s -> PolylineFacade.fetchPolyline(s, id_polyline, stravaService))
       .peek(s -> s.amKingOfMountain = segmentsProcessor.amKingOfMountain(s))
       .peek(s -> s.link = STRAVA_SEGMENT_URI + s.id)
-      .peek(s -> s.paceString = segmentsProcessor.calculatePace(s))
-      .peek(s -> s.bestTimeString = segmentsProcessor.calculateBestTime(s))
+      .peek(s -> s.myPaceString = segmentsProcessor.calculatePace(s))
+      .peek(s -> s.myBestTimeString = segmentsProcessor.formatBestTimeStringExplicit(s))
       .peek(s -> s.startCoordinatePair = s.startLatitudeLongitude.get(0) + "," + s.startLatitudeLongitude.get(1))
       .forEach(s -> segments.add(s));
     System.out.println("first block, ms: " + (System.currentTimeMillis() - start));
@@ -48,6 +48,8 @@ public class App {
     //all people best time stats
     start = System.currentTimeMillis();
     segmentsProcessor.setAllPeopleBestTimesAndScores_andFixAmKOM(segments, allPeopleBestTimeSecondsFacade);
+    segmentsProcessor.formatAllPeopleBestTimeStrings(segments);
+    segmentsProcessor.formatAllPeoplePaceStrings(segments);
     System.out.println("all people best time stats, ms: " + (System.currentTimeMillis() - start));
 
     //block B

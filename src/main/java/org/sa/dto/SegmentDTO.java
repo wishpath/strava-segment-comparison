@@ -35,8 +35,8 @@ public class SegmentDTO {
 
 
   //my attempt stats
-  public String paceString;
-  public String bestTimeString;
+  public String myPaceString;
+  public String myBestTimeString;
 
 
   //my score and comparisons
@@ -49,6 +49,9 @@ public class SegmentDTO {
   //other people score
   public int allPeopleBestScore;
   public int allPeopleBestTimeSeconds;
+  public String allPeopleBestTimeString;
+  public String allPeoplePaceString;
+
   public boolean isEasiestToGetKingOfMountain = false; // has lowest allPeopleBestScore comparing other segments (not including "King Of the Mountain" ones)
 
   //local legend

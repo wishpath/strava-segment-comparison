@@ -73,14 +73,11 @@ public class SegmentsProcessor {
   public void setIsMyBestScore(List<SegmentDTO> segments) {
     int maxScore = getMaxScore(segments);
 
-    for (SegmentDTO s : segments) {
+    for (SegmentDTO s : segments)
       if (s.userPersonalRecordDTO != null) //
         if (!s.amKingOfMountain)
-          if (s.myScore == maxScore) {
-            System.out.println(Console.TAB.repeat(3) + "my best score: " + s.name + " ; am king of mountain: " + s.amKingOfMountain);
+          if (s.myScore == maxScore)
             s.isMyStrongestSegmentAttempted = true;
-          }
-    }
   }
 
   public boolean amKingOfMountain(SegmentDTO s) {
@@ -124,18 +121,16 @@ public class SegmentsProcessor {
         minAllPeopleScore = Math.min(minAllPeopleScore, s.allPeopleBestScore);
 
     for (SegmentDTO s : segments)
-      if (s.allPeopleBestScore == minAllPeopleScore) {
-        if (s.amKingOfMountain) continue;
-        s.isEasiestToGetKingOfMountain = true;
-        System.out.println(Console.TAB + Colors.LIGHT_GRAY + "easiestKOM: " + s.name + Colors.RESET);
-      }
+      if (s.allPeopleBestScore == minAllPeopleScore)
+        if (!s.amKingOfMountain)
+          s.isEasiestToGetKingOfMountain = true;
   }
 
   public void setAllPeopleBestTimesAndScores_andFixAmKOM(List<SegmentDTO> segments, AllPeopleBestTimeSecondsFacade allPeopleBestTimeSecondsFacade) {
     for (SegmentDTO s : segments) {
       s.allPeopleBestTimeSeconds = allPeopleBestTimeSecondsFacade.getAllPeopleBestTimeSeconds(s);
       if (s.allPeopleBestTimeSeconds == s.userPersonalRecordSeconds && !s.amKingOfMountain) {
-        System.out.println(Console.TAB + Colors.RED + "FIXING 'am king of mountain:" + s.name + Colors.RESET);
+        System.out.println(Console.TAB + Colors.RED + "FIXING, I'm The KingOfMountain: " + s.name + Colors.RESET);
         s.amKingOfMountain = true;
       }
       s.allPeopleBestScore = s.amKingOfMountain ? s.myScore : Score.getScore(s, s.allPeopleBestTimeSeconds);

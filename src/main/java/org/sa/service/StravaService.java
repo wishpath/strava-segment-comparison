@@ -76,24 +76,6 @@ public class StravaService {
     return parseSegments(getStarredSegmentsJson());
   }
 
-  public List<List<Double>> getSegmentPoints(long segmentId) {
-    try {
-      URL url = new URL("https://www.strava.com/api/v3/segments/" + segmentId);
-      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-      conn.setRequestMethod("GET");
-      conn.setRequestProperty("Authorization", "Bearer " + getAccessToken(Props.STRAVA_REFRESH_TOKEN));
-
-      try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-        String json = reader.lines().collect(Collectors.joining());
-        JSONObject obj = new JSONObject(json);
-        String googlePolylineFormat = obj.getJSONObject("map").getString("polyline"); // compressed segment track
-        return PolylineUtil.decodePolyline(googlePolylineFormat);
-      }
-    } catch (Exception e) {
-      throw new RuntimeException("Failed to fetch segment: " + e.getMessage(), e);
-    }
-  }
-
   public String getSegmentPolyline(long segmentId) {
     System.out.print("extracting polyline; segment id: " + segmentId);
     try {

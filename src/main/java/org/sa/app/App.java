@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 public class App {
   private static final String STRAVA_SEGMENT_URI =  "https://www.strava.com/segments/";
@@ -22,7 +21,6 @@ public class App {
   public static void main(String[] args) throws IOException {
     System.out.println();
     List<SegmentDTO> segments = new ArrayList<>();
-    Map<Long, String> id_polyline = StorageUtil.loadPolylines("polylines.properties");
 
     //first block
     long start = System.currentTimeMillis();
@@ -36,7 +34,6 @@ public class App {
       .sorted(Comparator.comparingInt(CoordinateService::getDistanceFromHomeInMeters))
       .peek(s -> s.myScore = Score.getScore(s))
       .sorted(Comparator.comparingInt(s -> s.myScore))
-      .peek(s -> PolylineFacade.fetchPolyline(s, id_polyline, stravaService))
       .peek(s -> s.amKingOfMountain = segmentsProcessor.amKingOfMountain(s))
       .peek(s -> s.link = STRAVA_SEGMENT_URI + s.id)
       .peek(s -> s.myPaceString = segmentsProcessor.calculatePace(s))
@@ -44,6 +41,11 @@ public class App {
       .peek(s -> s.startCoordinatePair = s.startLatitudeLongitude.get(0) + "," + s.startLatitudeLongitude.get(1))
       .forEach(s -> segments.add(s));
     System.out.println("first block, ms: " + (System.currentTimeMillis() - start));
+
+    //fetch polylines
+    start = System.currentTimeMillis();
+    new PolylineFacade(stravaService).fetchPolylines(segments);
+    System.out.println("fetched polylines, ms: " + (System.currentTimeMillis() - start));
 
     //all people best time stats
     start = System.currentTimeMillis();
@@ -60,7 +62,6 @@ public class App {
     System.out.println("block B, ms: " + (System.currentTimeMillis() - start));
 
     //local legend stats
-    System.out.println("local legend: ");
     start = System.currentTimeMillis();
     localLegendService.setLocalLegendStats(stravaService, segments);
     System.out.println("local legend stats, ms: " + (System.currentTimeMillis() - start));
@@ -75,8 +76,7 @@ public class App {
     MapService.exportSegmentsWithPolylinesToLeafletJS(segments);
     MapService.openMap("map_with_polylines.html");
 
-    //store polylines and course records
-    StorageUtil.savePolylinesToFile(id_polyline, "polylines.properties");
+    //store course records
     allPeopleBestTimeSecondsFacade.overwriteCourseRecordsBeforeAppTerminates();
   }
 }

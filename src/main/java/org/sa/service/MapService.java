@@ -25,7 +25,7 @@ public class MapService {
   }
 
   public static void exportSegmentsWithPolylinesToLeafletJS(java.util.List<SegmentDTO> segments) {
-    try (PrintWriter writer = new PrintWriter(new File("map_with_polylines.html"))) {
+    try (PrintWriter writer = new PrintWriter(new File("src/main/java/org/sa/storage/map_with_polylines.html"))) {
       writer.println("<!DOCTYPE html><html><head><meta charset='utf-8'>");
       writer.println("<link rel='stylesheet' href='https://unpkg.com/leaflet/dist/leaflet.css' />");
       writer.println("<script src='https://unpkg.com/leaflet/dist/leaflet.js'></script>");

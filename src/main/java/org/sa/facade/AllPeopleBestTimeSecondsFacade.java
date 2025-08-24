@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AllPeopleBestTimeSecondsFacade {
-  private static final Path COURSE_ALL_POPLE_BEST_TIME_SECONDS_CSV_FILEPATH = Path.of("course_record_times.csv");
+  private static final Path COURSE_ALL_POPLE_BEST_TIME_SECONDS_CSV_FILEPATH = Path.of("src/main/java/org/sa/storage/course_record_times.csv");
   private final Map<Long, CourseRecord> segmentId_courseAllPeopleBestTimeRecord = new HashMap<>();
 
   public AllPeopleBestTimeSecondsFacade() { loadCourseRecords(); }

@@ -3,6 +3,7 @@ to_do:
   - if i've got KOM, what should i do with 0/0 efforts in the label?
   - fix printing to console.
   - put functionalities back to stream peek elements
+  - with stream only get raw segments and filter. do modifications separately
   - score for very long segments should be fixed:
       - 100 should be amazing score
       - but for example of "Chocholow granica - Magura" (8667m):

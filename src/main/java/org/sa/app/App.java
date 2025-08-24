@@ -74,7 +74,7 @@ public class App {
     //PrintFacade.printSegments(segments, segmentsProcessor);
     //map
     MapService.exportSegmentsWithPolylinesToLeafletJS(segments);
-    MapService.openMap("map_with_polylines.html");
+    MapService.openMap("src/main/java/org/sa/storage/map_with_polylines.html");
 
     //store course records
     allPeopleBestTimeSecondsFacade.overwriteCourseRecordsBeforeAppTerminates();

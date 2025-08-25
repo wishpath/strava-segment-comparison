@@ -1,20 +1,12 @@
 to_do:
-  - put storage files to storage
   - if i've got KOM, what should i do with 0/0 efforts in the label?
   - fix printing to console.
   - put functionalities back to stream peek elements
   - with stream only get raw segments and filter. do modifications separately
-  - score for very long segments should be fixed:
-      - 100 should be amazing score
-      - but for example of "Chocholow granica - Magura" (8667m):
-          - gets score of 708 - does not make much sense
   - add details in readme:
       - detalize all the variables needed for running the app
       - improve presentation of an application (screenshots, descriptions);
-  - make a "data" package (or named like "memory") for storing pre-saved polylines and "all people best times"
-  - add more info to the label:
-      - next to "my best pace" -> "all people best pace"
-      - next to "my best time" -> "all people best time"
+
 ideas:
   - detail
   - get all people best time through API not from DOM

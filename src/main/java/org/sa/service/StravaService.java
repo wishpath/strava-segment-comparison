@@ -17,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -74,6 +75,16 @@ public class StravaService {
 
   public List<SegmentDTO> getStarredSegments() throws IOException {
     return parseSegments(getStarredSegmentsJson());
+  }
+
+  public List<SegmentDTO> getStarredSegmentsFilterAndSort() throws IOException {
+    return getStarredSegments().stream()
+        .filter(s -> CoordinateService.isCloseToHome(s))
+        .filter(s -> s.activityType.equals("Run"))
+        .filter(s -> s.averageGradePercent > 1)
+        .sorted(Comparator.comparingInt(CoordinateService::getDistanceFromHomeInMeters))
+        .sorted(Comparator.comparingInt(s -> s.myScore))
+        .toList();
   }
 
   public String getSegmentPolyline(long segmentId) {

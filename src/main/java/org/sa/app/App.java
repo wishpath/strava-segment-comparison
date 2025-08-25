@@ -3,12 +3,13 @@ package org.sa.app;
 import org.sa.dto.SegmentDTO;
 import org.sa.facade.AllPeopleBestTimeSecondsFacade;
 import org.sa.facade.PolylineFacade;
-import org.sa.service.*;
+import org.sa.service.LocalLegendService;
+import org.sa.service.MapService;
+import org.sa.service.SegmentsProcessor;
+import org.sa.service.StravaService;
 import org.sa.service.score.Score;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class App {
@@ -20,26 +21,18 @@ public class App {
 
   public static void main(String[] args) throws IOException {
     System.out.println();
-    List<SegmentDTO> segments = new ArrayList<>();
 
     //first block
     long start = System.currentTimeMillis();
-    stravaService
-      .getStarredSegments()
-      .stream()
-      .filter(s -> CoordinateService.isCloseToHome(s))
-      .filter(s -> s.activityType.equals("Run"))
-      .filter(s -> s.averageGradePercent > 1)
+    List<SegmentDTO> segments = stravaService.getStarredSegmentsFilterAndSort();
+    segments.stream()
       .peek(s -> s.deltaAltitude = s.elevationHighMeters - s.elevationLowMeters)
-      .sorted(Comparator.comparingInt(CoordinateService::getDistanceFromHomeInMeters))
       .peek(s -> s.myScore = Score.getScore(s))
-      .sorted(Comparator.comparingInt(s -> s.myScore))
       .peek(s -> s.amKingOfMountain = segmentsProcessor.amKingOfMountain(s))
       .peek(s -> s.link = STRAVA_SEGMENT_URI + s.id)
       .peek(s -> s.myPaceString = segmentsProcessor.calculatePace(s))
       .peek(s -> s.myBestTimeString = segmentsProcessor.formatBestTimeStringExplicit(s))
-      .peek(s -> s.startCoordinatePair = s.startLatitudeLongitude.get(0) + "," + s.startLatitudeLongitude.get(1))
-      .forEach(s -> segments.add(s));
+      .forEach(s -> s.startCoordinatePair = s.startLatitudeLongitude.get(0) + "," + s.startLatitudeLongitude.get(1));
     System.out.println("first block, ms: " + (System.currentTimeMillis() - start));
 
     //fetch polylines

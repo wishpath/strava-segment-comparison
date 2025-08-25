@@ -1,12 +1,10 @@
 to_do:
   - if i've got KOM, what should i do with 0/0 efforts in the label?
-  - fix printing to console.
   - put functionalities back to stream peek elements
   - with stream only get raw segments and filter. do modifications separately
   - add details in readme:
       - detalize all the variables needed for running the app
       - improve presentation of an application (screenshots, descriptions);
-
-ideas:
+        ideas:
   - detail
   - get all people best time through API not from DOM

@@ -123,7 +123,9 @@ public class MapService {
         "<br/>&nbsp;&nbsp;Score: " + scoreMineAndOverall +
         "<br/>&nbsp;&nbsp;Pace, m:ss/km: " + paceMineAndOverall +
         "<br/>&nbsp;&nbsp;Time, m:ss: " + bestTimeMineAndOverall +
-        "<br/>&nbsp;&nbsp;Tries: " + recentTriesMineAndOverall +
+        (s.amKingOfMountain ?
+            "" :
+            "<br/>&nbsp;&nbsp;Tries: " + recentTriesMineAndOverall) +
         "<br/>" +
 
         //developer stuff

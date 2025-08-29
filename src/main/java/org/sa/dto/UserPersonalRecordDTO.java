@@ -11,5 +11,5 @@ public class UserPersonalRecordDTO {
   @JsonProperty("distance") public double distance;
   @JsonProperty("start_date") public String startDate;
   @JsonProperty("start_date_local") public String startDateLocal;
-  @JsonProperty("is_kom") public boolean isKingOfMountain;
+  @JsonProperty("is_kom") public boolean isKingOfMountain; //does not mean necessarily, is absolute best. Means best for gender (men or women). Someone who does not pick gender, does not steal KOM from men or women.
 }

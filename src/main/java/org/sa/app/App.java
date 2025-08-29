@@ -40,6 +40,11 @@ public class App {
     new PolylineFacade(stravaService).fetchPolylines(segments);
     System.out.println("fetched polylines, ms: " + (System.currentTimeMillis() - start));
 
+
+    for (SegmentDTO s : segments)
+      if (s.id == 37898397) {
+        System.out.println("Am KOM: " + s.amKingOfMountain);
+      }
     //all people best time stats
     start = System.currentTimeMillis();
     segmentsProcessor.setAllPeopleBestTimesAndScores_andFixAmKOM(segments, allPeopleBestTimeSecondsFacade);

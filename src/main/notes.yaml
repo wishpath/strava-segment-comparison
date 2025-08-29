@@ -1,10 +1,11 @@
 to_do:
-  - if i've got KOM, what should i do with 0/0 efforts in the label?
-  - put functionalities back to stream peek elements
-  - with stream only get raw segments and filter. do modifications separately
-  - add details in readme:
-      - detalize all the variables needed for running the app
-      - improve presentation of an application (screenshots, descriptions);
-        ideas:
-  - detail
+    - add details in readme:
+    - detalize all the variables needed for running the app
+    - improve presentation of an application (screenshots, descriptions);
+
+ideas:
   - get all people best time through API not from DOM
+  - wrong KOM logic:
+      - when in Strava your selected gender is NOT "prefer not to say":
+          - public boolean amKingOfMountain(SegmentDTO s) {
+          - @JsonProperty("is_kom") public boolean isKingOfMountain; //does not mean necessarily, is absolute best. Means best for gender (men or women). Someone who does not pick gender, does not steal KOM from men or women.

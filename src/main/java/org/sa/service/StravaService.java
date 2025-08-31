@@ -52,7 +52,7 @@ public class StravaService {
     }
   }
 
-  public String getStarredSegmentsJson() {
+  public String downloadStarredSegmentsJson() {
     try {
       URL url = new URL("https://www.strava.com/api/v3/segments/starred?page=1&per_page=200");
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -73,12 +73,12 @@ public class StravaService {
     return mapper.readValue(json, new TypeReference<>() {});
   }
 
-  public List<SegmentDTO> getStarredSegments() throws IOException {
-    return parseSegments(getStarredSegmentsJson());
+  public List<SegmentDTO> downloadStarredSegments() throws IOException {
+    return parseSegments(downloadStarredSegmentsJson());
   }
 
   public List<SegmentDTO> getStarredSegmentsFilterAndSort() throws IOException {
-    return getStarredSegments().stream()
+    return downloadStarredSegments().stream()
         .filter(s -> CoordinateService.isCloseToHome(s))
         .filter(s -> s.activityType.equals("Run"))
         .filter(s -> s.averageGradePercent > 1)

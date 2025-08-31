@@ -16,4 +16,7 @@ public class Props {
   public static String STRAVA_CLIENT_SECRET = System.getenv("STRAVA_CLIENT_SECRET");
   public static String STRAVA_REFRESH_TOKEN = System.getenv("STRAVA_REFRESH_TOKEN");
   public static final long MY_ATHLETE_ID = 7280094;
+
+
+  public static final String TAB = "   ";
 }

@@ -1,6 +1,6 @@
 package org.sa.service;
 
-import org.sa.config.Console;
+import org.sa.config.Props;
 import org.sa.console.Colors;
 import org.sa.dto.LocalLegendInfoDTO;
 import org.sa.dto.SegmentDTO;
@@ -51,7 +51,7 @@ public class LocalLegendService {
 
       LocalLegendRecord localLegendRecord = segmentId_localLegendRecord.get(s.id);
       if (localLegendRecord == null) {
-        System.out.println(Console.TAB + "Parsing local legend stats: " + Colors.LIGHT_GRAY + s.name + Colors.RESET);
+        System.out.println(Props.TAB + "Parsing local legend stats: " + Colors.LIGHT_GRAY + s.name + Colors.RESET);
         LocalLegendInfoDTO ll = stravaService.getLocalLegendInfo(s.id);
         if (ll == null) continue; // no tries in the last 90 days
         int myRecentAttemptCount = ll.amLocalLegend ? ll.legendEffortCount : (int) stravaService.getMyRecentEffortCount(s.id);

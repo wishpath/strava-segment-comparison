@@ -43,7 +43,6 @@ public class MapService {
       }
 
       writer.println("</script></body></html>");
-      System.out.println("\nMap file generated: map_with_polylines.html. Open it in your browser.");
     } catch (IOException e) {
       e.printStackTrace();
     }

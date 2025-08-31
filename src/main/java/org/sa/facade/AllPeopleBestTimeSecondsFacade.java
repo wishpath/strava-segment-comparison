@@ -10,6 +10,7 @@ import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AllPeopleBestTimeSecondsFacade {
@@ -36,7 +37,7 @@ public class AllPeopleBestTimeSecondsFacade {
 
   public int getAllPeopleBestTimeSeconds(SegmentDTO s) {
     //check if we already have the record
-    if (s.amKingOfMountain) return s.userPersonalRecordSeconds; //
+    if (s.amKingOfMountain) return s.userPersonalRecordSeconds;
     if (segmentId_courseAllPeopleBestTimeRecord.containsKey(s.id)) // course record is stored in the file
       return segmentId_courseAllPeopleBestTimeRecord.get(s.id).bestTimeSeconds;
 
@@ -58,7 +59,7 @@ public class AllPeopleBestTimeSecondsFacade {
     } catch (IOException ignored) {}
   }
 
-  public void overwriteCourseRecordsBeforeAppTerminates() {
+  public void overwriteAllPeopleBestTimesBeforeAppTerminates() {
     //build content
     StringBuilder content = new StringBuilder();
     for (Map.Entry<Long, CourseRecord> id_record : segmentId_courseAllPeopleBestTimeRecord.entrySet()) {
@@ -70,6 +71,12 @@ public class AllPeopleBestTimeSecondsFacade {
     try {
       Files.writeString(COURSE_ALL_POPLE_BEST_TIME_SECONDS_CSV_FILEPATH, content.toString());
     } catch (IOException e) {}
+  }
+
+  public void setAllPeopleBestTimes(List<SegmentDTO> segments) {
+    for (SegmentDTO s : segments) {
+      s.allPeopleBestTimeSeconds = getAllPeopleBestTimeSeconds(s);
+    }
   }
 
   private record CourseRecord(int bestTimeSeconds, LocalDateTime dateOfFetching) { }

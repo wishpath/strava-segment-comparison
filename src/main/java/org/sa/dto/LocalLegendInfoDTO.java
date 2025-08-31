@@ -1,8 +1,8 @@
 package org.sa.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.sa.config.Console;
 import org.sa.config.Props;
+import org.sa.console.Colors;
 
 public class LocalLegendInfoDTO {
   @JsonProperty("athlete_id") public long legendId; //id of whoever legend is
@@ -27,12 +27,12 @@ public class LocalLegendInfoDTO {
 
   @Override
   public String toString() {
-    String color = amLocalLegend ? Console.GREEN : Console.ORANGE;
+    String color = amLocalLegend ? Colors.GREEN : Colors.ORANGE;
     return color + "LocalLegendInfoDTO{\n" +
-        Console.TAB + "legendId=" + legendId + ",\n" +
-        Console.TAB + "athleteName='" + athleteName + "\',\n" +
-        Console.TAB + "legendEffortCount=" + legendEffortCount +  ",\n" +
-        Console.TAB + "amLocalLegend=" + amLocalLegend + ",\n" +
-        '}' + Console.RESET;
+        Props.TAB + "legendId=" + legendId + ",\n" +
+        Props.TAB + "athleteName='" + athleteName + "\',\n" +
+        Props.TAB + "legendEffortCount=" + legendEffortCount +  ",\n" +
+        Props.TAB + "amLocalLegend=" + amLocalLegend + ",\n" +
+        '}' + Colors.RESET;
   }
 }

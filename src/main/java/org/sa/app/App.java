@@ -1,5 +1,7 @@
 package org.sa.app;
 
+import org.sa.config.Props;
+import org.sa.console.SimpleColorPrint;
 import org.sa.dto.SegmentDTO;
 import org.sa.facade.AllPeopleBestTimeSecondsFacade;
 import org.sa.facade.PolylineFacade;
@@ -20,61 +22,57 @@ public class App {
   private static AllPeopleBestTimeSecondsFacade allPeopleBestTimeSecondsFacade = new AllPeopleBestTimeSecondsFacade();
 
   public static void main(String[] args) throws IOException {
-    System.out.println();
+    SimpleColorPrint.red("Tracking how efficient each code block is:");
 
-    //first block
+    //BLOCK A: download segments and enhance them with calculated values
     long start = System.currentTimeMillis();
     List<SegmentDTO> segments = stravaService.getStarredSegmentsFilterAndSort();
-    segments.stream()
-      .peek(s -> s.deltaAltitude = s.elevationHighMeters - s.elevationLowMeters)
-      .peek(s -> s.myScore = Score.getScore(s))
-      .peek(s -> s.amKingOfMountain = segmentsProcessor.amKingOfMountain(s))
-      .peek(s -> s.link = STRAVA_SEGMENT_URI + s.id)
-      .peek(s -> s.myPaceString = segmentsProcessor.calculatePace(s))
-      .peek(s -> s.myBestTimeString = segmentsProcessor.formatBestTimeStringExplicit(s))
-      .forEach(s -> s.startCoordinatePair = s.startLatitudeLongitude.get(0) + "," + s.startLatitudeLongitude.get(1));
-    System.out.println("first block, ms: " + (System.currentTimeMillis() - start));
+    for (SegmentDTO s : segments) {
+      s.deltaAltitude = s.elevationHighMeters - s.elevationLowMeters;
+      s.myScore = Score.getScore(s);
+      s.amKingOfMountain = segmentsProcessor.amKingOfMountain(s);
+      s.link = STRAVA_SEGMENT_URI + s.id;
+      s.myPaceString = segmentsProcessor.calculatePace(s);
+      s.myBestTimeString = segmentsProcessor.formatBestTimeString(s);
+      s.startCoordinatePair = s.startLatitudeLongitude.get(0) + "," + s.startLatitudeLongitude.get(1);
+    }
+    System.out.println(Props.TAB + (System.currentTimeMillis() - start) + "ms, BLOCK A: download segments and enhance them with calculated values");
 
-    //fetch polylines
+    //BLOCK B: download polylines
     start = System.currentTimeMillis();
     new PolylineFacade(stravaService).fetchPolylines(segments);
-    System.out.println("fetched polylines, ms: " + (System.currentTimeMillis() - start));
+    System.out.println(Props.TAB + (System.currentTimeMillis() - start) + "ms, BLOCK B: download polylines" );
 
-
-    for (SegmentDTO s : segments)
-      if (s.id == 37898397) {
-        System.out.println("Am KOM: " + s.amKingOfMountain);
-      }
-    //all people best time stats
+    //BLOCK C: download (html fetch) or remember all people best times
     start = System.currentTimeMillis();
-    segmentsProcessor.setAllPeopleBestTimesAndScores_andFixAmKOM(segments, allPeopleBestTimeSecondsFacade);
+    allPeopleBestTimeSecondsFacade.setAllPeopleBestTimes(segments);
+    segmentsProcessor.fixAmKOM(segments);
+    segmentsProcessor.setAllPeopleBestScores(segments);
     segmentsProcessor.formatAllPeopleBestTimeStrings(segments);
     segmentsProcessor.formatAllPeoplePaceStrings(segments);
-    System.out.println("all people best time stats, ms: " + (System.currentTimeMillis() - start));
+    allPeopleBestTimeSecondsFacade.overwriteAllPeopleBestTimesBeforeAppTerminates(); //storage
+    System.out.println(Props.TAB + (System.currentTimeMillis() - start) + "ms, BLOCK C: download (html fetch) or remember all people best times" );
 
-    //block B
+    //BLOCK D: local calculations: color and score flags:
     start = System.currentTimeMillis();
     segmentsProcessor.setSegmentColors(segments);
     segmentsProcessor.setIsMyWorstScore(segments);
     segmentsProcessor.setIsMyBestScore(segments);
-    System.out.println("block B, ms: " + (System.currentTimeMillis() - start));
+    System.out.println(Props.TAB + (System.currentTimeMillis() - start) + "ms, BLOCK D: local calculation: color and score flags" );
 
-    //local legend stats
+    //BLOCK E: download or remember local legend stats
     start = System.currentTimeMillis();
     localLegendService.setLocalLegendStats(stravaService, segments);
-    System.out.println("local legend stats, ms: " + (System.currentTimeMillis() - start));
+    System.out.println(Props.TAB + (System.currentTimeMillis() - start) + "ms, BLOCK E: download or remember local legend stats" );
 
-    //easiest to get KOM
+    //BLOCK F: local calculation: easiest to get KOM
     start = System.currentTimeMillis();
     segmentsProcessor.setIsEasiestToGetKingOfMountain(segments);
-    System.out.println("easiest to get KOM stats, ms: " + (System.currentTimeMillis() - start));
+    System.out.println(Props.TAB + (System.currentTimeMillis() - start) +  "ms, BLOCK F: local calculation: is easiest to get KOM");
 
     //PrintFacade.printSegments(segments, segmentsProcessor);
     //map
     MapService.exportSegmentsWithPolylinesToLeafletJS(segments);
     MapService.openMap("src/main/java/org/sa/storage/map_with_polylines.html");
-
-    //store course records
-    allPeopleBestTimeSecondsFacade.overwriteCourseRecordsBeforeAppTerminates();
   }
 }

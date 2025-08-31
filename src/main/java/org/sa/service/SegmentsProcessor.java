@@ -1,10 +1,9 @@
 package org.sa.service;
 
-import org.sa.config.Console;
+import org.sa.config.Props;
 import org.sa.console.Colors;
 import org.sa.console.WebColorGradientCalculator;
 import org.sa.dto.SegmentDTO;
-import org.sa.facade.AllPeopleBestTimeSecondsFacade;
 import org.sa.service.score.Score;
 
 import java.util.List;
@@ -108,7 +107,7 @@ public class SegmentsProcessor {
   /**
    * Formats best time as "Xm:YYs", e.g. "5m:00s" or "5m:07s".
    */
-  public String formatBestTimeStringExplicit(SegmentDTO s) {
+  public String formatBestTimeString(SegmentDTO s) {
     if (s.userPersonalRecordSeconds == null || s.userPersonalRecordSeconds <= 0) return "-1";
     return formatMinutesAndSecondsNoLetters(s.userPersonalRecordSeconds);
   }
@@ -126,13 +125,16 @@ public class SegmentsProcessor {
           s.isEasiestToGetKingOfMountain = true;
   }
 
-  public void setAllPeopleBestTimesAndScores_andFixAmKOM(List<SegmentDTO> segments, AllPeopleBestTimeSecondsFacade allPeopleBestTimeSecondsFacade) {
+  public void fixAmKOM(List<SegmentDTO> segments) {
     for (SegmentDTO s : segments) {
-      s.allPeopleBestTimeSeconds = allPeopleBestTimeSecondsFacade.getAllPeopleBestTimeSeconds(s);
       if (s.allPeopleBestTimeSeconds == s.userPersonalRecordSeconds && !s.amKingOfMountain) {
-        System.out.println(Console.TAB + Colors.RED + "FIXING, I'm The KingOfMountain: " + s.name + Colors.RESET);
+        System.out.println(Props.TAB.repeat(2) + Colors.BLUE + "FIXING, I'm The KingOfMountain: " + s.name + Colors.RESET);
         s.amKingOfMountain = true;
       }
+    }
+  }
+  public void setAllPeopleBestScores(List<SegmentDTO> segments) {
+    for (SegmentDTO s : segments) {
       s.allPeopleBestScore = s.amKingOfMountain ? s.myScore : Score.getScore(s, s.allPeopleBestTimeSeconds);
     }
   }

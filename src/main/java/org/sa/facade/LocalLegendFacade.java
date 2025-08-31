@@ -1,9 +1,10 @@
-package org.sa.service;
+package org.sa.facade;
 
 import org.sa.config.Props;
 import org.sa.console.Colors;
 import org.sa.dto.LocalLegendInfoDTO;
 import org.sa.dto.SegmentDTO;
+import org.sa.service.StravaService;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,11 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LocalLegendService {
+public class LocalLegendFacade {
   private static final Path LOCAL_LEGEND_RECORDS_CSV_FILEPATH = Path.of("src/main/java/org/sa/storage/localLegend.csv");
   private final Map<Long, LocalLegendRecord> segmentId_localLegendRecord = new HashMap<>();
 
-  public LocalLegendService(){
+  public LocalLegendFacade(){
     //load from file storage
     if (!Files.exists(LOCAL_LEGEND_RECORDS_CSV_FILEPATH)) return;
     LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(7);
@@ -54,7 +55,7 @@ public class LocalLegendService {
         System.out.println(Props.TAB + "Parsing local legend stats: " + Colors.LIGHT_GRAY + s.name + Colors.RESET);
         LocalLegendInfoDTO ll = stravaService.getLocalLegendInfo(s.id);
         if (ll == null) continue; // no tries in the last 90 days
-        int myRecentAttemptCount = ll.amLocalLegend ? ll.legendEffortCount : (int) stravaService.getMyRecentEffortCount(s.id);
+        int myRecentAttemptCount = ll.amLocalLegend ? ll.legendEffortCount : (int) stravaService.downloadMyRecentEffortCount(s.id);
         localLegendRecord = new LocalLegendRecord(ll.legendEffortCount, ll.amLocalLegend, myRecentAttemptCount, LocalDateTime.now());
         segmentId_localLegendRecord.put(s.id, localLegendRecord);
       }

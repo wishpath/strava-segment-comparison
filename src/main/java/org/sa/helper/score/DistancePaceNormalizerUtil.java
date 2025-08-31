@@ -1,10 +1,10 @@
-package org.sa.service.score;
+package org.sa.helper.score;
 
 import java.util.List;
 
 record DistancePace(double distanceMeters, double referencePacePerKm) {}
 
-public class DistancePaceNormalizer {
+public class DistancePaceNormalizerUtil {
 
   /**
    * Reference table of typical elite-level pace (min/km) for a range of distances.

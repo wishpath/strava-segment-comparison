@@ -1,4 +1,4 @@
-package org.sa.service;
+package org.sa.util;
 
 import org.sa.console.WebColorGradientCalculator;
 

@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class MapService {
+public class MapProducer {
 
   private static final String CROWN_EMOJI = "&#x1F451;"; //👑
   private static final String SKULL_EMOJI = "\uD83D\uDC80"; //💀

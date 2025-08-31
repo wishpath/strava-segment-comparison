@@ -1,7 +1,7 @@
 package org.sa.facade;
 
 import org.sa.dto.SegmentDTO;
-import org.sa.service.HtmlFetcher;
+import org.sa.service.AllPeopleBestTimeHtmlFetcher;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -43,7 +43,7 @@ public class AllPeopleBestTimeSecondsFacade {
 
     //fetch and memorize
     System.out.print(s.name + ": fetching course record: ");
-    int fetchedTime = HtmlFetcher.fetchAllPeopleBestTimeSeconds(s);
+    int fetchedTime = AllPeopleBestTimeHtmlFetcher.fetchAllPeopleBestTimeSeconds(s);
     segmentId_courseAllPeopleBestTimeRecord.put(s.id, new CourseRecord(fetchedTime, LocalDateTime.now()));
 
     //doubles the record in the file, but that is ok since first one is too old, and will be overwritten before app terminates

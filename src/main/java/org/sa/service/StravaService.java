@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.sa.config.Props;
 import org.sa.dto.LocalLegendInfoDTO;
 import org.sa.dto.SegmentDTO;
+import org.sa.helper.CoordinateHelper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -79,10 +80,10 @@ public class StravaService {
 
   public List<SegmentDTO> getStarredSegmentsFilterAndSort() throws IOException {
     return downloadStarredSegments().stream()
-        .filter(s -> CoordinateService.isCloseToHome(s))
+        .filter(s -> CoordinateHelper.isCloseToHome(s))
         .filter(s -> s.activityType.equals("Run"))
         .filter(s -> s.averageGradePercent > 1)
-        .sorted(Comparator.comparingInt(CoordinateService::getDistanceFromHomeInMeters))
+        .sorted(Comparator.comparingInt(CoordinateHelper::getDistanceFromHomeInMeters))
         .sorted(Comparator.comparingInt(s -> s.myScore))
         .toList();
   }
@@ -174,7 +175,7 @@ public class StravaService {
     }
   }
 
-  public long getMyRecentEffortCount(long segmentId) {
+  public long downloadMyRecentEffortCount(long segmentId) {
     try {
       String urlStr = "https://www.strava.com/api/v3/segment_efforts?segment_id=" + segmentId + "&per_page=200&athlete_id=" + Props.MY_ATHLETE_ID;
       URL url = new URL(urlStr);

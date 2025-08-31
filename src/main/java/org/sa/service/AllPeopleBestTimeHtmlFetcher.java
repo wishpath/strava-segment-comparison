@@ -10,7 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.stream.Collectors;
 
-public class HtmlFetcher {
+public class AllPeopleBestTimeHtmlFetcher {
   public static int fetchAllPeopleBestTimeSeconds(SegmentDTO s){
     //fetch DOM
     String dom = null;

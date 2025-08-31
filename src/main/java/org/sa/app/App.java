@@ -5,11 +5,11 @@ import org.sa.console.SimpleColorPrint;
 import org.sa.dto.SegmentDTO;
 import org.sa.facade.AllPeopleBestTimeSecondsFacade;
 import org.sa.facade.PolylineFacade;
-import org.sa.service.LocalLegendService;
-import org.sa.service.MapService;
-import org.sa.service.SegmentsProcessor;
+import org.sa.facade.LocalLegendFacade;
+import org.sa.service.MapProducer;
+import org.sa.helper.SegmentsProcessorHelper;
 import org.sa.service.StravaService;
-import org.sa.service.score.Score;
+import org.sa.helper.score.ScoreCalculatorHelper;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,8 +17,8 @@ import java.util.List;
 public class App {
   private static final String STRAVA_SEGMENT_URI =  "https://www.strava.com/segments/";
   private static final StravaService stravaService = new StravaService();
-  private static SegmentsProcessor segmentsProcessor = new SegmentsProcessor();
-  private static LocalLegendService localLegendService = new LocalLegendService();
+  private static SegmentsProcessorHelper segmentsProcessor = new SegmentsProcessorHelper();
+  private static LocalLegendFacade localLegendService = new LocalLegendFacade();
   private static AllPeopleBestTimeSecondsFacade allPeopleBestTimeSecondsFacade = new AllPeopleBestTimeSecondsFacade();
 
   public static void main(String[] args) throws IOException {
@@ -29,7 +29,7 @@ public class App {
     List<SegmentDTO> segments = stravaService.getStarredSegmentsFilterAndSort();
     for (SegmentDTO s : segments) {
       s.deltaAltitude = s.elevationHighMeters - s.elevationLowMeters;
-      s.myScore = Score.getScore(s);
+      s.myScore = ScoreCalculatorHelper.getScore(s);
       s.amKingOfMountain = segmentsProcessor.amKingOfMountain(s);
       s.link = STRAVA_SEGMENT_URI + s.id;
       s.myPaceString = segmentsProcessor.calculatePace(s);
@@ -70,9 +70,8 @@ public class App {
     segmentsProcessor.setIsEasiestToGetKingOfMountain(segments);
     System.out.println(Props.TAB + (System.currentTimeMillis() - start) +  "ms, BLOCK F: local calculation: is easiest to get KOM");
 
-    //PrintFacade.printSegments(segments, segmentsProcessor);
     //map
-    MapService.exportSegmentsWithPolylinesToLeafletJS(segments);
-    MapService.openMap("src/main/java/org/sa/storage/map_with_polylines.html");
+    MapProducer.exportSegmentsWithPolylinesToLeafletJS(segments);
+    MapProducer.openMap("src/main/java/org/sa/storage/map_with_polylines.html");
   }
 }

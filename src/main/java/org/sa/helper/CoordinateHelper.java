@@ -1,11 +1,11 @@
-package org.sa.service;
+package org.sa.helper;
 
 import org.sa.config.Props;
 import org.sa.dto.SegmentDTO;
 
 import java.util.List;
 
-public class CoordinateService {
+public class CoordinateHelper {
   public static int getDistanceInMeters(List<Double> from, List<Double> to) {
     double R = 6371000; // Earth's radius in meters
     double lat1 = Math.toRadians(from.get(0));
@@ -28,6 +28,6 @@ public class CoordinateService {
   }
 
   public static boolean isCloseToHome(SegmentDTO segment) {
-    return CoordinateService.getDistanceFromHomeInMeters(segment) < Props.DEFINITION_OF_CLOSENESS_METERS;
+    return CoordinateHelper.getDistanceFromHomeInMeters(segment) < Props.DEFINITION_OF_CLOSENESS_METERS;
   }
 }

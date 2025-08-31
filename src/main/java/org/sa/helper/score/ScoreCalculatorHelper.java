@@ -1,10 +1,10 @@
-package org.sa.service.score;
+package org.sa.helper.score;
 
 import org.sa.dto.SegmentDTO;
 
 import java.util.Map;
 
-public class Score {
+public class ScoreCalculatorHelper {
 
   // one would get score 100, if ran flat 300m at 3min/km pace.
   private static final double EXCELLENCE_PACE_MIN_PER_KM_FOR_300_METER_FLAT_SEGMENT = 2.99;
@@ -21,8 +21,8 @@ public class Score {
 
   public static int getScore(SegmentDTO s, Integer timeSeconds) {
     if (timeSeconds == null) return 0;
-    int normalizedFlatDistanceMeters = GradeAdjustmentModel.calculateGradeAdjustedFlatLength((int) s.nonFlatDistanceMeters, s.averageGradePercent);
-    double normalizedPaceMinPerKm = DistancePaceNormalizer.normalizePaceFor300Meters(timeSeconds, normalizedFlatDistanceMeters);
+    int normalizedFlatDistanceMeters = GradeAdjustmentModelUtil.calculateGradeAdjustedFlatLength((int) s.nonFlatDistanceMeters, s.averageGradePercent);
+    double normalizedPaceMinPerKm = DistancePaceNormalizerUtil.normalizePaceFor300Meters(timeSeconds, normalizedFlatDistanceMeters);
     int score = (int) (SCORE_FACTOR / normalizedPaceMinPerKm);
     if (id_coefficient.get(s.id) != null) score *= id_coefficient.get(s.id);
     return score;

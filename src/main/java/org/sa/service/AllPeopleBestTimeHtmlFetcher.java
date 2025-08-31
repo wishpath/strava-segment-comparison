@@ -21,9 +21,13 @@ public class AllPeopleBestTimeHtmlFetcher {
     }
 
     //extract best time string from DOM
+    final String REGEX_MINUTES_AND_SECONDS = "[0-9]{1,2}:[0-9]{2}";
+    final String REGEX_SECONDS_ONLY = "[0-9]+<abbr class='unit' title='second'>s</abbr>";
     String timeString = dom.split("<td class='last-child'>")[1].split("</td>")[0];
     System.out.println("FETCHED ALL PEOPLE BEST TIME FROM HTML (STRING): " + Colors.RED + timeString + Colors.RESET);
-    if (!timeString.matches("[0-9]{1,2}:[0-9]{2}")) // examples that fit this regex: 9:45, 12:00
+    if (timeString.matches(REGEX_SECONDS_ONLY))
+      timeString = "0:" + timeString.split("<abbr")[0];
+    if (!timeString.matches(REGEX_MINUTES_AND_SECONDS)) // examples that fit this regex: 9:45, 12:00
       System.out.println(Colors.A4_ORANGE + " WRONG PATTERN OF TIME STRING" + Colors.RESET);
 
     //parse int time in seconds from string

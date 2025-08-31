@@ -52,7 +52,7 @@ public class LocalLegendFacade {
 
       LocalLegendRecord localLegendRecord = segmentId_localLegendRecord.get(s.id);
       if (localLegendRecord == null) {
-        System.out.println(Props.TAB + "Parsing local legend stats: " + Colors.LIGHT_GRAY + s.name + Colors.RESET);
+        System.out.println(Props.TAB.repeat(2) + Colors.BLUE + "Parsing local legend stats: " + Colors.LIGHT_GRAY + s.name + Colors.RESET);
         LocalLegendInfoDTO ll = stravaService.getLocalLegendInfo(s.id);
         if (ll == null) continue; // no tries in the last 90 days
         int myRecentAttemptCount = ll.amLocalLegend ? ll.legendEffortCount : (int) stravaService.downloadMyRecentEffortCount(s.id);

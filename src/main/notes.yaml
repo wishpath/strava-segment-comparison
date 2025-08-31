@@ -1,11 +1,11 @@
 to_do:
-    - add details in readme:
+  - add details in readme:
     - detalize all the variables needed for running the app
     - improve presentation of an application (screenshots, descriptions);
 
 ideas:
   - get all people best time through API not from DOM
   - wrong KOM logic:
-      - when in Strava your selected gender is NOT "prefer not to say":
-          - public boolean amKingOfMountain(SegmentDTO s) {
-          - @JsonProperty("is_kom") public boolean isKingOfMountain; //does not mean necessarily, is absolute best. Means best for gender (men or women). Someone who does not pick gender, does not steal KOM from men or women.
+    - when in Strava your selected gender is NOT "prefer not to say":
+      - public boolean amKingOfMountain(SegmentDTO s) {
+      - @JsonProperty("is_kom") public boolean isKingOfMountain; //does not mean necessarily, is absolute best. Means best for gender (men or women). Someone who does not pick gender, does not steal KOM from men or women.

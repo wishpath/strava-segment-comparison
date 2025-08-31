@@ -48,7 +48,7 @@ public class SegmentDTO {
 
   //other people score
   public int allPeopleBestScore;
-  public int allPeopleBestTimeSeconds;
+  public Integer allPeopleBestTimeSeconds;
   public String allPeopleBestTimeString;
   public String allPeoplePaceString;
 

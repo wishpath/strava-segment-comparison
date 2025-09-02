@@ -7,7 +7,7 @@ Compare athlete's Strava segment results.
 * Counts how close they are to home point
 * Scores athletes best performance score depending on:
   * Distance, time and gradient.
-* Presents calculations in the console.
+* Presents calculations in the generated html map.
 
 ## Settings
 * Build and run: Intellij

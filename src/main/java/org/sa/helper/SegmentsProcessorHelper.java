@@ -116,7 +116,7 @@ public class SegmentsProcessorHelper {
 
   public void fixAmKOM(List<SegmentDTO> segments) {
     for (SegmentDTO s : segments) {
-      if (s.allPeopleBestTimeSeconds == s.userPersonalRecordSeconds && !s.amKingOfMountain) {
+      if (s.allPeopleBestTimeSeconds.equals(s.userPersonalRecordSeconds) && !s.amKingOfMountain) {
         System.out.println(Props.TAB.repeat(2) + Colors.BLUE + "FIXING, I'm The KingOfMountain: " + s.name + Colors.RESET);
         s.amKingOfMountain = true;
       }
